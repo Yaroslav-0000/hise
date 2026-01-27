@@ -5,8 +5,10 @@ import base64
 
 app = Flask(__name__)
 
-GITHUBTOKEN = os.environ.get("GITHUBTOKEN")
-REPO = "Yaroslav-0000/Shop330"
+# правильное имя переменной
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")  
+
+REPO = "Yaroslav-0000/hise"
 FILE_PATH = "index.html"
 
 @app.route("/")
@@ -15,7 +17,6 @@ def home():
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     r = requests.get(url, headers=headers)
     data = r.json()
-    import base64
     html_code = base64.b64decode(data["content"]).decode("utf-8")
     return html_code
 
