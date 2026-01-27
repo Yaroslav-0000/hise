@@ -5,15 +5,10 @@
       "password": "admin123",
       "createdAt": "2024-01-15T10:00:00.000Z"
     },
-    "user1": {
-      "balance": 2500,
-      "password": "password1",
+    "dima": {
+      "balance": 999999999999,
+      "password": "123",
       "createdAt": "2024-01-20T14:30:00.000Z"
-    },
-    "user2": {
-      "balance": 1500,
-      "password": "password2",
-      "createdAt": "2024-01-25T09:15:00.000Z"
     }
   },
   "categories": {
