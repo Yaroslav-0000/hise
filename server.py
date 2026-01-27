@@ -5,9 +5,10 @@ import base64
 
 app = Flask(__name__)
 
-# правильное имя переменной
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")  
+# Переменная окружения Railway → GITHUB_TOKEN
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 
+# Правильное имя репозитория
 REPO = "Yaroslav-0000/hise"
 FILE_PATH = "index.html"
 
@@ -21,5 +22,5 @@ def home():
     return html_code
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
