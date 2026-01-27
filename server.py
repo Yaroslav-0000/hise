@@ -8,5 +8,5 @@ def home():
     return "Сервер работает глобально ✅"
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Railway передаст свой порт
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
