@@ -1,12 +1,26 @@
 import os
 from flask import Flask
+import requests
+import base64
 
 app = Flask(__name__)
 
+# Переменная окружения Railway → GITHUB_TOKEN
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
+
+# Твой репозиторий
+REPO = "Yaroslav-0000/hise"
+FILE_PATH = "index.html"   # указываем реальный HTML-файл
+
 @app.route("/")
 def home():
-    return "Сервер работает глобально ✅"
+    url = f"https://api.github.com/repos/{REPO}/contents/{FILE_PATH}"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+    r = requests.get(url, headers=headers)
+    data = r.json()
+    html_code = base64.b64decode(data["content"]).decode("utf-8")
+    return html_code   # отдаём HTML как страницу
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Railway передаст свой порт
+    port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
