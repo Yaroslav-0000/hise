@@ -5,12 +5,9 @@ import base64
 
 app = Flask(__name__)
 
-# Переменная окружения Railway → GITHUB_TOKEN
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
-
-# Правильное имя репозитория
 REPO = "Yaroslav-0000/hise"
-FILE_PATH = "index.html"
+FILE_PATH = "server.py"   # указываем реальный файл
 
 @app.route("/")
 def home():
@@ -18,8 +15,8 @@ def home():
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     r = requests.get(url, headers=headers)
     data = r.json()
-    html_code = base64.b64decode(data["content"]).decode("utf-8")
-    return html_code
+    code = base64.b64decode(data["content"]).decode("utf-8")
+    return f"<pre>{code}</pre>"   # покажет код как текст в браузере
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
