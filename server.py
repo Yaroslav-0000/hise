@@ -1,6 +1,7 @@
 import os
 from flask import Flask
 import requests
+import base64
 
 app = Flask(__name__)
 
