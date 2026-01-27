@@ -1,12 +1,12 @@
 import os
 from flask import Flask
 
-app = Flask(name)
+app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Сервер работает ✅"
+    return "Сервер работает глобально ✅"
 
-if name == "main":
-    port = int(os.environ.get("PORT", 8080))  # Railway передаёт порт
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))  # Railway передаст свой порт
     app.run(host="0.0.0.0", port=port)
