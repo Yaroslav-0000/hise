@@ -1,484 +1,786 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>Shop</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial;background:#f5f5f5;color:#333}
-header{background:#2c3e50;color:white;padding:15px 20px}
-.header{display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:1.5rem;font-weight:bold}
-.user-info{display:flex;gap:15px;align-items:center}
-.balance{background:#34495e;padding:5px 15px;border-radius:20px}
-.btn{padding:8px 16px;border:none;border-radius:4px;cursor:pointer;font-weight:bold}
-.btn-primary{background:#3498db;color:white}
-.btn-secondary{background:#e74c3c;color:white}
-.btn-outline{background:transparent;border:2px solid #3498db;color:#3498db}
-.container{max-width:1200px;margin:0 auto;padding:20px}
-.categories{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-.category-btn{padding:8px 16px;background:white;border:none;border-radius:4px;cursor:pointer}
-.category-btn.active{background:#3498db;color:white}
-.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
-.product-card{background:white;border-radius:5px;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
-.product-img{height:150px;background:#ecf0f1;display:flex;align-items:center;justify-content:center}
-.product-info{padding:15px}
-.product-price{font-size:1.2rem;font-weight:bold;color:#2c3e50;margin:10px 0}
-.product-stock{color:#27ae60;font-size:0.9rem}
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center}
-.modal.active{display:flex}
-.modal-content{background:white;border-radius:5px;width:90%;max-width:500px;max-height:90vh;overflow-y:auto}
-.modal-header{padding:15px;border-bottom:1px solid #eee;display:flex;justify-content:space-between}
-.modal-body{padding:15px}
-.form-group{margin-bottom:15px}
-.form-control{width:100%;padding:8px;border:1px solid #ddd;border-radius:4px}
-.admin-panel{background:white;padding:20px;border-radius:5px;margin-top:20px;display:none}
-.admin-panel.active{display:block}
-.tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-.tab{padding:8px 16px;background:#ecf0f1;border:none;border-radius:4px;cursor:pointer}
-.tab.active{background:#3498db;color:white}
-.tab-content{display:none}
-.tab-content.active{display:block}
-.order-card{background:#f8f9fa;border:1px solid #dee2e6;border-radius:5px;padding:15px;margin-bottom:10px}
-.hidden{display:none!important}
-.mt-20{margin-top:20px}
-</style>
+  <meta charset="UTF-8">
+  <title>Shop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
+    
+    header { background: #2c3e50; color: white; padding: 15px 20px; }
+    .header-content { display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .user-info { display: flex; gap: 15px; align-items: center; }
+    .balance { background: #34495e; padding: 5px 15px; border-radius: 20px; }
+    
+    .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .btn-primary { background: #3498db; color: white; }
+    .btn-secondary { background: #e74c3c; color: white; }
+    .btn-outline { background: transparent; border: 2px solid #3498db; color: #3498db; }
+    .btn-success { background: #27ae60; color: white; }
+    .btn-warning { background: #f39c12; color: white; }
+    
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    
+    .categories { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .category-btn { padding: 8px 16px; background: white; border: none; border-radius: 4px; cursor: pointer; }
+    .category-btn.active { background: #3498db; color: white; }
+    
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+    .product-card { background: white; border-radius: 5px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .product-img { height: 150px; background: #ecf0f1; display: flex; align-items: center; justify-content: center; color: #7f8c8d; }
+    .product-info { padding: 15px; }
+    .product-price { font-size: 1.2rem; font-weight: bold; color: #2c3e50; margin: 10px 0; }
+    .product-stock { color: #27ae60; font-size: 0.9rem; }
+    .product-stock.out { color: #e74c3c; }
+    
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+    .modal.active { display: flex; }
+    .modal-content { background: white; border-radius: 5px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+    .modal-body { padding: 15px; }
+    
+    .form-group { margin-bottom: 15px; }
+    .form-control { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+    
+    .admin-panel { background: white; padding: 20px; border-radius: 5px; margin-top: 20px; display: none; }
+    .admin-panel.active { display: block; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tab { padding: 8px 16px; background: #ecf0f1; border: none; border-radius: 4px; cursor: pointer; }
+    .tab.active { background: #3498db; color: white; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    
+    .order-card { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 5px; padding: 15px; margin-bottom: 10px; }
+    .order-status { padding: 3px 10px; border-radius: 3px; font-size: 0.9rem; display: inline-block; margin-top: 5px; }
+    .status-pending { background: #fff3cd; color: #856404; }
+    .status-completed { background: #d4edda; color: #155724; }
+    .status-cancelled { background: #f8d7da; color: #721c24; }
+    
+    .hidden { display: none !important; }
+    .mt-20 { margin-top: 20px; }
+    .mb-10 { margin-bottom: 10px; }
+  </style>
 </head>
 <body>
-<header>
-<div class="container">
-<div class="header">
-<div class="logo">SHOP</div>
-<div class="user-info">
-<div class="balance">Баланс: <span id="balance">0</span>₴</div>
-<button class="btn btn-outline" onclick="showTab('auth')" id="authBtn">Войти</button>
-<button class="btn btn-secondary hidden" onclick="logout()" id="logoutBtn">Выйти</button>
-<button class="btn btn-primary" onclick="toggleAdmin()">Админка</button>
-</div>
-</div>
-</div>
-</header>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">SHOP</div>
+        <div class="user-info">
+          <div class="balance">Баланс: <span id="balance">0</span>₴</div>
+          <button class="btn btn-outline" onclick="showTab('auth')" id="authBtn">Войти</button>
+          <button class="btn btn-secondary hidden" onclick="logout()" id="logoutBtn">Выйти</button>
+          <button class="btn btn-primary" onclick="toggleAdmin()" id="adminBtn">Админка</button>
+        </div>
+      </div>
+    </div>
+  </header>
 
-<div class="container">
-<div id="authTab" class="tab-content active">
-<div class="form-group">
-<input type="text" class="form-control" id="authUser" placeholder="Имя" value="user1">
-</div>
-<div class="form-group">
-<input type="password" class="form-control" id="authPass" placeholder="Пароль" value="pass1">
-</div>
-<button class="btn btn-primary" onclick="login()">Войти</button>
-<button class="btn btn-secondary" onclick="register()">Регистрация</button>
-</div>
+  <div class="container">
+    <!-- Auth Tab -->
+    <div id="authTab" class="tab-content active">
+      <div class="form-group">
+        <input type="text" class="form-control" id="authUser" placeholder="Имя пользователя" value="user1">
+      </div>
+      <div class="form-group">
+        <input type="password" class="form-control" id="authPass" placeholder="Пароль" value="pass1">
+      </div>
+      <button class="btn btn-primary" onclick="login()">Войти</button>
+      <button class="btn btn-secondary" onclick="register()">Регистрация</button>
+    </div>
+    
+    <!-- Products Tab -->
+    <div id="productsTab" class="tab-content hidden">
+      <div class="categories">
+        <button class="category-btn active" onclick="selectCategory('all')">Все товары</button>
+        <div id="categoryList"></div>
+      </div>
+      <div class="products-grid" id="productsGrid"></div>
+    </div>
+    
+    <!-- Orders Tab -->
+    <div id="ordersTab" class="tab-content hidden">
+      <h3>Мои заказы</h3>
+      <div id="userOrders"></div>
+    </div>
+    
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+      <div class="tabs">
+        <button class="tab active" onclick="switchAdminTab('adminOrders')">Заказы</button>
+        <button class="tab" onclick="switchAdminTab('adminProducts')">Товары</button>
+        <button class="tab" onclick="switchAdminTab('adminUsers')">Пользователи</button>
+        <button class="tab" onclick="switchAdminTab('adminSettings')">Настройки</button>
+      </div>
+      
+      <!-- Admin Orders -->
+      <div id="adminOrders" class="tab-content active">
+        <div id="allOrders"></div>
+      </div>
+      
+      <!-- Admin Products -->
+      <div id="adminProducts" class="tab-content">
+        <div class="form-group">
+          <select class="form-control" id="productCategory">
+            <option value="">Выберите категорию</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" id="productName" placeholder="Название товара">
+        </div>
+        <div class="form-group">
+          <input type="number" class="form-control" id="productPrice" placeholder="Цена">
+        </div>
+        <div class="form-group">
+          <input type="number" class="form-control" id="productStock" placeholder="Количество">
+        </div>
+        <div class="form-group">
+          <textarea class="form-control" id="productDesc" placeholder="Описание"></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="saveProduct()">Сохранить</button>
+        <button class="btn btn-secondary" onclick="deleteProduct()">Удалить</button>
+      </div>
+      
+      <!-- Admin Users -->
+      <div id="adminUsers" class="tab-content">
+        <div class="form-group">
+          <input type="text" class="form-control" id="userSearch" placeholder="Поиск пользователя">
+        </div>
+        <div id="usersList"></div>
+      </div>
+      
+      <!-- Admin Settings -->
+      <div id="adminSettings" class="tab-content">
+        <div class="form-group">
+          <label>Новый пароль админа:</label>
+          <input type="password" class="form-control" id="newAdminPass" placeholder="Введите новый пароль">
+        </div>
+        <button class="btn btn-primary" onclick="changeAdminPass()">Изменить пароль</button>
+      </div>
+    </div>
+  </div>
 
-<div id="productsTab" class="tab-content hidden">
-<div class="categories">
-<button class="category-btn active" onclick="selectCategory('all')">Все</button>
-<div id="categoryList"></div>
-</div>
-<div class="products-grid" id="productsGrid"></div>
-</div>
+  <!-- Product Modal -->
+  <div class="modal" id="productModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle"></h3>
+        <button onclick="closeProductModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="product-price" id="modalPrice"></div>
+        <p id="modalDesc"></p>
+        <p class="product-stock" id="modalStock"></p>
+        <button class="btn btn-primary mt-20" onclick="buyProduct()" id="buyBtn">Купить</button>
+      </div>
+    </div>
+  </div>
 
-<div id="ordersTab" class="tab-content hidden">
-<h3>Мои заказы</h3>
-<div id="myOrders"></div>
-</div>
+  <script>
+    let storeData = {
+      users: {},
+      categories: {},
+      orders: [],
+      adminPass: "log21"
+    };
+    
+    let currentUser = null;
+    let currentProduct = null;
+    let selectedCategory = 'all';
+    let isAdmin = false;
 
-<div class="admin-panel" id="adminPanel">
-<div class="tabs">
-<button class="tab active" onclick="switchAdminTab('adminOrders')">Заказы</button>
-<button class="tab" onclick="switchAdminTab('adminProducts')">Товары</button>
-<button class="tab" onclick="switchAdminTab('adminUsers')">Пользователи</button>
-<button class="tab" onclick="switchAdminTab('adminSettings')">Настройки</button>
-</div>
+    // Load data
+    async function loadData() {
+      const res = await fetch('/get_data');
+      storeData = await res.json();
+      if (!storeData.adminPass) storeData.adminPass = "log21";
+      updateUI();
+    }
 
-<div id="adminOrders" class="tab-content active">
-<div id="allOrders"></div>
-</div>
+    // Save data
+    async function saveData() {
+      await fetch('/save_data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(storeData)
+      });
+    }
 
-<div id="adminProducts" class="tab-content">
-<div class="form-group">
-<select class="form-control" id="productCategory">
-<option value="">Категория</option>
-</select>
-</div>
-<div class="form-group">
-<input type="text" class="form-control" id="productName" placeholder="Название">
-</div>
-<div class="form-group">
-<input type="number" class="form-control" id="productPrice" placeholder="Цена">
-</div>
-<div class="form-group">
-<input type="number" class="form-control" id="productStock" placeholder="Количество">
-</div>
-<button class="btn btn-primary" onclick="saveProduct()">Сохранить</button>
-<button class="btn btn-secondary" onclick="deleteProduct()">Удалить</button>
-</div>
+    // Update UI
+    function updateUI() {
+      updateCategories();
+      updateProducts();
+      updateBalance();
+      if (currentUser) {
+        updateUserOrders();
+      }
+      if (isAdmin) {
+        updateAdminOrders();
+      }
+    }
 
-<div id="adminUsers" class="tab-content">
-<div class="form-group">
-<input type="text" class="form-control" id="searchUser" placeholder="Имя пользователя">
-</div>
-<div class="form-group">
-<input type="number" class="form-control" id="addBalance" placeholder="Сумма">
-</div>
-<button class="btn btn-primary" onclick="changeBalance()">Изменить баланс</button>
-</div>
+    // Update categories
+    function updateCategories() {
+      const list = document.getElementById('categoryList');
+      list.innerHTML = '';
+      Object.keys(storeData.categories || {}).forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'category-btn';
+        btn.textContent = cat;
+        btn.onclick = () => selectCategory(cat);
+        list.appendChild(btn);
+      });
+      
+      const select = document.getElementById('productCategory');
+      select.innerHTML = '<option value="">Выберите категорию</option>';
+      Object.keys(storeData.categories || {}).forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        select.appendChild(option);
+      });
+    }
 
-<div id="adminSettings" class="tab-content">
-<div class="form-group">
-<label>Новый пароль админа:</label>
-<input type="password" class="form-control" id="newAdminPass">
-</div>
-<button class="btn btn-primary" onclick="changeAdminPass()">Изменить пароль</button>
-</div>
-</div>
-</div>
+    // Update products
+    function updateProducts() {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = '';
+      
+      let products = [];
+      if (selectedCategory === 'all') {
+        Object.entries(storeData.categories || {}).forEach(([catName, cat]) => {
+          Object.entries(cat).forEach(([prodName, product]) => {
+            products.push({ category: catName, name: prodName, ...product });
+          });
+        });
+      } else {
+        const cat = storeData.categories[selectedCategory];
+        if (cat) {
+          Object.entries(cat).forEach(([prodName, product]) => {
+            products.push({ category: selectedCategory, name: prodName, ...product });
+          });
+        }
+      }
+      
+      if (products.length === 0) {
+        grid.innerHTML = '<p>Товаров нет</p>';
+        return;
+      }
+      
+      products.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <div class="product-img">
+            <div style="font-size: 2rem;">📦</div>
+          </div>
+          <div class="product-info">
+            <h4>${product.name}</h4>
+            <div class="product-price">${product.price}₴</div>
+            <p class="product-stock ${product.stock === 0 ? 'out' : ''}">
+              ${product.stock === 0 ? 'Нет в наличии' : `В наличии: ${product.stock}`}
+            </p>
+            <button class="btn btn-primary" onclick="showProduct('${product.category}', '${product.name}')">
+              Подробнее
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
 
-<div class="modal" id="productModal">
-<div class="modal-content">
-<div class="modal-header">
-<h3 id="modalTitle"></h3>
-<button onclick="closeModal()">&times;</button>
-</div>
-<div class="modal-body">
-<div class="product-price" id="modalPrice"></div>
-<p id="modalDesc"></p>
-<p id="modalStock"></p>
-<button class="btn btn-primary mt-20" onclick="buyProduct()">Купить</button>
-</div>
-</div>
-</div>
+    // Update balance
+    function updateBalance() {
+      const balanceEl = document.getElementById('balance');
+      const authBtn = document.getElementById('authBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+      
+      if (currentUser && storeData.users[currentUser]) {
+        balanceEl.textContent = storeData.users[currentUser].balance;
+        authBtn.textContent = currentUser;
+        authBtn.classList.add('hidden');
+        logoutBtn.classList.remove('hidden');
+      } else {
+        balanceEl.textContent = '0';
+        authBtn.textContent = 'Войти';
+        authBtn.classList.remove('hidden');
+        logoutBtn.classList.add('hidden');
+      }
+    }
 
-<script>
-let storeData = {users:{},categories:{},orders:[],adminPass:"log21"};
-let currentUser = null;
-let currentProduct = null;
-let selectedCategory = 'all';
-let isAdmin = false;
+    // Update user orders
+    function updateUserOrders() {
+      const container = document.getElementById('userOrders');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      const userOrders = (storeData.orders || []).filter(order => order.user === currentUser);
+      
+      if (userOrders.length === 0) {
+        container.innerHTML = '<p>У вас нет заказов</p>';
+        return;
+      }
+      
+      // Sort by date
+      userOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      
+      userOrders.forEach((order, index) => {
+        const card = document.createElement('div');
+        card.className = 'order-card';
+        
+        let statusClass = 'status-pending';
+        let statusText = 'Ожидает';
+        if (order.status === 'completed') {
+          statusClass = 'status-completed';
+          statusText = 'Выполнен';
+        } else if (order.status === 'cancelled') {
+          statusClass = 'status-cancelled';
+          statusText = 'Отменен';
+        }
+        
+        card.innerHTML = `
+          <div>
+            <strong>${order.product}</strong><br>
+            <small>${new Date(order.createdAt).toLocaleString()}</small><br>
+            <span class="order-status ${statusClass}">${statusText}</span>
+          </div>
+          <p>Цена: ${order.price}₴</p>
+          ${order.status === 'pending' ? `
+            <button class="btn btn-secondary btn-sm" onclick="cancelOrder('${order.id}')">
+              Отменить заказ
+            </button>
+          ` : ''}
+        `;
+        container.appendChild(card);
+      });
+    }
 
-async function loadData(){
-const res = await fetch('/get_data');
-storeData = await res.json();
-if(!storeData.adminPass) storeData.adminPass="log21";
-updateUI();
-}
+    // Update admin orders
+    function updateAdminOrders() {
+      const container = document.getElementById('allOrders');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      if (!storeData.orders || storeData.orders.length === 0) {
+        container.innerHTML = '<p>Заказов нет</p>';
+        return;
+      }
+      
+      // Sort by date
+      const sortedOrders = [...storeData.orders].sort((a, b) => 
+        new Date(b.createdAt) - new Date(a.createdAt)
+      );
+      
+      sortedOrders.forEach((order, index) => {
+        const card = document.createElement('div');
+        card.className = 'order-card';
+        
+        let statusClass = 'status-pending';
+        let statusText = 'Ожидает';
+        if (order.status === 'completed') {
+          statusClass = 'status-completed';
+          statusText = 'Выполнен';
+        } else if (order.status === 'cancelled') {
+          statusClass = 'status-cancelled';
+          statusText = 'Отменен';
+        }
+        
+        card.innerHTML = `
+          <div>
+            <strong>Заказ #${index + 1}</strong><br>
+            <small>${new Date(order.createdAt).toLocaleString()}</small><br>
+            <span class="order-status ${statusClass}">${statusText}</span>
+          </div>
+          <p><strong>Пользователь:</strong> ${order.user}</p>
+          <p><strong>Товар:</strong> ${order.product}</p>
+          <p><strong>Цена:</strong> ${order.price}₴</p>
+          <div class="mt-20">
+            ${order.status === 'pending' ? `
+              <button class="btn btn-success btn-sm" onclick="completeOrder('${order.id}')">
+                ✅ Выполнен
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="adminCancelOrder('${order.id}')">
+                ❌ Отменить
+              </button>
+            ` : ''}
+            ${order.status === 'completed' ? `
+              <button class="btn btn-warning btn-sm" onclick="pendingOrder('${order.id}')">
+                ↩ В ожидание
+              </button>
+            ` : ''}
+            ${order.status === 'cancelled' ? `
+              <button class="btn btn-warning btn-sm" onclick="pendingOrder('${order.id}')">
+                ↩ Восстановить
+              </button>
+            ` : ''}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
 
-async function saveData(){
-await fetch('/save_data',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify(storeData)
-});
-}
+    // Auth functions
+    function showTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.add('hidden');
+      });
+      document.getElementById(tabName + 'Tab').classList.remove('hidden');
+    }
 
-function updateUI(){
-updateCategories();
-updateProducts();
-updateBalance();
-if(currentUser) updateOrders();
-if(isAdmin) updateAdminOrders();
-}
+    async function register() {
+      const user = document.getElementById('authUser').value.trim();
+      const pass = document.getElementById('authPass').value.trim();
+      
+      if (!user || !pass) {
+        alert('Заполните все поля');
+        return;
+      }
+      
+      if (storeData.users[user]) {
+        alert('Пользователь уже существует');
+        return;
+      }
+      
+      storeData.users[user] = { 
+        balance: 1000, 
+        password: pass,
+        createdAt: new Date().toISOString()
+      };
+      
+      currentUser = user;
+      await saveData();
+      showTab('products');
+      updateUI();
+      alert('Регистрация успешна! На счету 1000₴');
+    }
 
-function updateCategories(){
-const list = document.getElementById('categoryList');
-list.innerHTML='';
-for(let cat in storeData.categories){
-const btn = document.createElement('button');
-btn.className='category-btn';
-btn.textContent=cat;
-btn.onclick=()=>selectCategory(cat);
-list.appendChild(btn);
-}
-const select = document.getElementById('productCategory');
-select.innerHTML='<option value="">Категория</option>';
-for(let cat in storeData.categories){
-const option = document.createElement('option');
-option.value=cat;
-option.textContent=cat;
-select.appendChild(option);
-}
-}
+    function login() {
+      const user = document.getElementById('authUser').value.trim();
+      const pass = document.getElementById('authPass').value.trim();
+      
+      // Check if admin
+      if (user === 'admin' && pass === storeData.adminPass) {
+        currentUser = 'admin';
+        isAdmin = true;
+        showTab('products');
+        updateUI();
+        alert('Вход как администратор');
+        return;
+      }
+      
+      // Check regular user
+      if (storeData.users[user] && storeData.users[user].password === pass) {
+        currentUser = user;
+        isAdmin = false;
+        showTab('products');
+        updateUI();
+        alert('Вход успешен');
+      } else {
+        alert('Неверные данные');
+      }
+    }
 
-function updateProducts(){
-const grid = document.getElementById('productsGrid');
-grid.innerHTML='';
-let products=[];
-if(selectedCategory==='all'){
-for(let cat in storeData.categories){
-for(let prod in storeData.categories[cat]){
-products.push({category:cat,name:prod,...storeData.categories[cat][prod]});
-}}
-}else{
-const cat=storeData.categories[selectedCategory];
-if(cat){
-for(let prod in cat){
-products.push({category:selectedCategory,name:prod,...cat[prod]});
-}}}
-if(products.length===0){
-grid.innerHTML='<p>Товаров нет</p>';
-return;
-}
-products.forEach(p=>{
-const card = document.createElement('div');
-card.className='product-card';
-card.innerHTML=`
-<div class="product-img">📦</div>
-<div class="product-info">
-<h4>${p.name}</h4>
-<div class="product-price">${p.price}₴</div>
-<p class="product-stock">В наличии: ${p.stock}</p>
-<button class="btn btn-primary" onclick="showProduct('${p.category}','${p.name}')">
-Подробнее
-</button>
-</div>`;
-grid.appendChild(card);
-});
-}
+    function logout() {
+      currentUser = null;
+      isAdmin = false;
+      showTab('auth');
+      updateUI();
+    }
 
-function updateBalance(){
-const balanceEl = document.getElementById('balance');
-const authBtn = document.getElementById('authBtn');
-const logoutBtn = document.getElementById('logoutBtn');
-if(currentUser && storeData.users[currentUser]){
-balanceEl.textContent=storeData.users[currentUser].balance;
-authBtn.textContent=currentUser;
-authBtn.classList.add('hidden');
-logoutBtn.classList.remove('hidden');
-}else{
-balanceEl.textContent='0';
-authBtn.textContent='Войти';
-authBtn.classList.remove('hidden');
-logoutBtn.classList.add('hidden');
-}
-}
+    // Product functions
+    function selectCategory(category) {
+      selectedCategory = category;
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      updateProducts();
+    }
 
-function updateOrders(){
-const div = document.getElementById('myOrders');
-div.innerHTML='';
-if(!currentUser) return;
-const userOrders = storeData.orders.filter(o=>o.user===currentUser);
-if(userOrders.length===0){
-div.innerHTML='<p>Нет заказов</p>';
-return;
-}
-userOrders.forEach(o=>{
-const card = document.createElement('div');
-card.className='order-card';
-card.innerHTML=`
-<p><strong>${o.product}</strong> - ${o.price}₴</p>
-<p>Статус: ${o.status||'ожидает'}</p>
-${(o.status||'ожидает')==='ожидает'?`
-<button class="btn btn-secondary" onclick="cancelOrder('${o.id}')">
-Отменить
-</button>`:''}
-`;
-div.appendChild(card);
-});
-}
+    function showProduct(category, productName) {
+      if (!storeData.categories[category] || !storeData.categories[category][productName]) {
+        alert('Товар не найден');
+        return;
+      }
+      
+      currentProduct = { category, name: productName };
+      const product = storeData.categories[category][productName];
+      
+      document.getElementById('modalTitle').textContent = productName;
+      document.getElementById('modalPrice').textContent = `${product.price}₴`;
+      document.getElementById('modalDesc').textContent = product.description || 'Описание отсутствует';
+      document.getElementById('modalStock').textContent = product.stock === 0 ? 'Нет в наличии' : `В наличии: ${product.stock} шт.`;
+      
+      const buyBtn = document.getElementById('buyBtn');
+      if (product.stock === 0) {
+        buyBtn.disabled = true;
+        buyBtn.textContent = 'Нет в наличии';
+      } else {
+        buyBtn.disabled = false;
+        buyBtn.textContent = 'Купить';
+      }
+      
+      document.getElementById('productModal').classList.add('active');
+    }
 
-function updateAdminOrders(){
-const div = document.getElementById('allOrders');
-div.innerHTML='';
-if(!storeData.orders||storeData.orders.length===0){
-div.innerHTML='<p>Заказов нет</p>';
-return;
-}
-storeData.orders.forEach((o,i)=>{
-const card = document.createElement('div');
-card.className='order-card';
-card.innerHTML=`
-<p><strong>${o.user}</strong>: ${o.product} - ${o.price}₴</p>
-<p>Статус: ${o.status||'ожидает'}</p>
-<button class="btn" onclick="changeOrderStatus('${o.id}','выполнен')">
-✅ Выполнен
-</button>
-<button class="btn" onclick="changeOrderStatus('${o.id}','отменен')">
-❌ Отменить
-</button>
-`;
-div.appendChild(card);
-});
-}
+    function closeProductModal() {
+      document.getElementById('productModal').classList.remove('active');
+      currentProduct = null;
+    }
 
-function showTab(tab){
-document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden'));
-document.getElementById(tab+'Tab').classList.remove('hidden');
-if(tab==='orders') updateOrders();
-}
+    async function buyProduct() {
+      if (!currentUser) {
+        alert('Сначала войдите в систему');
+        return;
+      }
+      
+      if (!currentProduct) return;
+      
+      const { category, name } = currentProduct;
+      const product = storeData.categories[category][name];
+      const user = storeData.users[currentUser];
+      
+      if (!product || product.stock === 0) {
+        alert('Товар закончился');
+        return;
+      }
+      
+      if (user.balance < product.price) {
+        alert('Недостаточно средств');
+        return;
+      }
+      
+      // Process purchase
+      user.balance -= product.price;
+      product.stock -= 1;
+      
+      // Create order
+      if (!storeData.orders) {
+        storeData.orders = [];
+      }
+      
+      const order = {
+        id: Date.now().toString(),
+        user: currentUser,
+        product: name,
+        category: category,
+        price: product.price,
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      };
+      
+      storeData.orders.push(order);
+      
+      await saveData();
+      updateUI();
+      alert('Покупка успешна!');
+      closeProductModal();
+      showTab('orders');
+    }
 
-function login(){
-const user=document.getElementById('authUser').value;
-const pass=document.getElementById('authPass').value;
-if(user==='admin'&&pass===storeData.adminPass){
-currentUser='admin';isAdmin=true;
-showTab('products');updateUI();
-return;
-}
-if(storeData.users[user]&&storeData.users[user].password===pass){
-currentUser=user;isAdmin=false;
-showTab('products');updateUI();
-}else alert('Неверно');
-}
+    // Order functions
+    async function cancelOrder(orderId) {
+      const order = storeData.orders.find(o => o.id === orderId);
+      
+      if (!order || order.user !== currentUser) {
+        alert('Заказ не найден');
+        return;
+      }
+      
+      if (order.status !== 'pending') {
+        alert('Можно отменить только ожидающие заказы');
+        return;
+      }
+      
+      // Return money
+      const user = storeData.users[currentUser];
+      if (user) {
+        user.balance += order.price;
+      }
+      
+      // Return product to stock
+      if (storeData.categories[order.category] && storeData.categories[order.category][order.product]) {
+        storeData.categories[order.category][order.product].stock += 1;
+      }
+      
+      order.status = 'cancelled';
+      
+      await saveData();
+      updateUI();
+      alert('Заказ отменен');
+    }
 
-function register(){
-const user=document.getElementById('authUser').value;
-const pass=document.getElementById('authPass').value;
-if(!storeData.users[user]){
-storeData.users[user]={balance:1000,password:pass};
-currentUser=user;
-saveData();
-showTab('products');updateUI();
-alert('Успешно');
-}else alert('Уже есть');
-}
+    // Admin functions
+    function toggleAdmin() {
+      if (!isAdmin) {
+        const pass = prompt('Введите пароль админа:');
+        if (pass === storeData.adminPass) {
+          isAdmin = true;
+          currentUser = 'admin';
+          updateUI();
+          document.getElementById('adminPanel').classList.toggle('active');
+        } else {
+          alert('Неверный пароль');
+        }
+      } else {
+        document.getElementById('adminPanel').classList.toggle('active');
+      }
+    }
 
-function logout(){
-currentUser=null;isAdmin=false;
-showTab('auth');updateUI();
-}
+    function switchAdminTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.tab').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+      
+      if (tabName === 'adminUsers') {
+        loadUsersList();
+      }
+    }
 
-function selectCategory(cat){
-selectedCategory=cat;
-document.querySelectorAll('.category-btn').forEach(b=>b.classList.remove('active'));
-event.target.classList.add('active');
-updateProducts();
-}
+    async function completeOrder(orderId) {
+      const order = storeData.orders.find(o => o.id === orderId);
+      if (order) {
+        order.status = 'completed';
+        await saveData();
+        updateAdminOrders();
+      }
+    }
 
-function showProduct(cat,name){
-currentProduct={cat,name};
-const p=storeData.categories[cat][name];
-document.getElementById('modalTitle').textContent=name;
-document.getElementById('modalPrice').textContent=p.price+'₴';
-document.getElementById('modalDesc').textContent=p.description||'Описания нет';
-document.getElementById('modalStock').textContent='В наличии: '+p.stock;
-document.getElementById('productModal').classList.add('active');
-}
+    async function adminCancelOrder(orderId) {
+      const order = storeData.orders.find(o => o.id === orderId);
+      if (order) {
+        order.status = 'cancelled';
+        
+        // Return money
+        const user = storeData.users[order.user];
+        if (user) {
+          user.balance += order.price;
+        }
+        
+        // Return product
+        if (storeData.categories[order.category] && storeData.categories[order.category][order.product]) {
+          storeData.categories[order.category][order.product].stock += 1;
+        }
+        
+        await saveData();
+        updateAdminOrders();
+      }
+    }
 
-function closeModal(){
-document.getElementById('productModal').classList.remove('active');
-}
+    async function pendingOrder(orderId) {
+      const order = storeData.orders.find(o => o.id === orderId);
+      if (order) {
+        order.status = 'pending';
+        await saveData();
+        updateAdminOrders();
+      }
+    }
 
-async function buyProduct(){
-if(!currentUser){alert('Войдите');return;}
-const {cat,name}=currentProduct;
-const p=storeData.categories[cat][name];
-const u=storeData.users[currentUser];
-if(u.balance>=p.price&&p.stock>0){
-u.balance-=p.price;
-p.stock--;
-const order={
-id:Date.now().toString(),
-user:currentUser,
-product:name,
-category:cat,
-price:p.price,
-status:'ожидает',
-createdAt:new Date().toISOString()
-};
-storeData.orders.push(order);
-await saveData();
-updateUI();
-closeModal();
-alert('Куплено');
-}else alert('Нельзя купить');
-}
+    async function saveProduct() {
+      const cat = document.getElementById('productCategory').value.trim();
+      const name = document.getElementById('productName').value.trim();
+      const price = parseFloat(document.getElementById('productPrice').value);
+      const stock = parseInt(document.getElementById('productStock').value);
+      const desc = document.getElementById('productDesc').value.trim();
+      
+      if (!cat || !name || isNaN(price) || isNaN(stock)) {
+        alert('Заполните все поля');
+        return;
+      }
+      
+      if (!storeData.categories[cat]) {
+        storeData.categories[cat] = {};
+      }
+      
+      storeData.categories[cat][name] = {
+        price: price,
+        stock: stock,
+        description: desc,
+        specs: {}
+      };
+      
+      await saveData();
+      updateUI();
+      alert('Товар сохранен');
+    }
 
-async function cancelOrder(id){
-const o=storeData.orders.find(x=>x.id===id);
-if(o&&o.user===currentUser&&(o.status||'ожидает')==='ожидает'){
-o.status='отменен';
-const u=storeData.users[currentUser];
-if(u) u.balance+=o.price;
-if(storeData.categories[o.category]&&storeData.categories[o.category][o.product]){
-storeData.categories[o.category][o.product].stock++;
-}
-await saveData();
-updateUI();
-}
-}
+    async function deleteProduct() {
+      const cat = document.getElementById('productCategory').value.trim();
+      const name = document.getElementById('productName').value.trim();
+      
+      if (storeData.categories[cat] && storeData.categories[cat][name]) {
+        if (confirm(`Удалить товар "${name}"?`)) {
+          delete storeData.categories[cat][name];
+          await saveData();
+          updateUI();
+          alert('Товар удален');
+        }
+      } else {
+        alert('Товар не найден');
+      }
+    }
 
-function toggleAdmin(){
-if(!isAdmin){
-const pass=prompt('Пароль админа:');
-if(pass===storeData.adminPass){
-isAdmin=true;
-document.getElementById('adminPanel').classList.add('active');
-updateAdminOrders();
-}else alert('Неверно');
-}else{
-document.getElementById('adminPanel').classList.toggle('active');
-}
-}
+    function loadUsersList() {
+      const list = document.getElementById('usersList');
+      list.innerHTML = '';
+      
+      Object.entries(storeData.users || {}).forEach(([username, data]) => {
+        const div = document.createElement('div');
+        div.style.cssText = 'background: #ecf0f1; padding: 15px; margin: 10px 0; border-radius: 4px;';
+        div.innerHTML = `
+          <strong>${username}</strong><br>
+          <small>Баланс: ${data.balance}₴</small>
+          <div style="margin-top: 10px;">
+            <input type="number" id="amt_${username}" placeholder="Сумма" style="width: 100px; padding: 5px;">
+            <button class="btn btn-sm btn-primary" onclick="addBalance('${username}')">Изменить баланс</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
 
-function switchAdminTab(tab){
-document.querySelectorAll('#adminPanel .tab-content').forEach(t=>t.classList.add('hidden'));
-document.querySelectorAll('#adminPanel .tab').forEach(t=>t.classList.remove('active'));
-document.getElementById(tab).classList.remove('hidden');
-event.target.classList.add('active');
-}
+    async function addBalance(username) {
+      const input = document.getElementById(`amt_${username}`);
+      const amount = parseFloat(input.value);
+      
+      if (isNaN(amount)) {
+        alert('Введите сумму');
+        return;
+      }
+      
+      storeData.users[username].balance += amount;
+      await saveData();
+      updateUI();
+      alert(`Баланс обновлен`);
+      input.value = '';
+    }
 
-async function changeOrderStatus(id,status){
-const o=storeData.orders.find(x=>x.id===id);
-if(o){
-const old=o.status||'ожидает';
-o.status=status;
-if(old==='ожидает'&&status==='отменен'){
-const u=storeData.users[o.user];
-if(u)u.balance+=o.price;
-if(storeData.categories[o.category]&&storeData.categories[o.category][o.product]){
-storeData.categories[o.category][o.product].stock++;
-}}
-await saveData();
-updateAdminOrders();
-}
-}
+    async function changeAdminPass() {
+      const newPass = document.getElementById('newAdminPass').value;
+      
+      if (!newPass) {
+        alert('Введите новый пароль');
+        return;
+      }
+      
+      storeData.adminPass = newPass;
+      await saveData();
+      alert('Пароль админа изменен');
+      document.getElementById('newAdminPass').value = '';
+    }
 
-async function saveProduct(){
-const cat=document.getElementById('productCategory').value;
-const name=document.getElementById('productName').value;
-const price=parseFloat(document.getElementById('productPrice').value);
-const stock=parseInt(document.getElementById('productStock').value);
-if(cat&&name&&price&&stock){
-if(!storeData.categories[cat]) storeData.categories[cat]={};
-storeData.categories[cat][name]={price,stock};
-await saveData();
-updateUI();
-alert('Сохранено');
-}
-}
-
-async function deleteProduct(){
-const cat=document.getElementById('productCategory').value;
-const name=document.getElementById('productName').value;
-if(storeData.categories[cat]&&storeData.categories[cat][name]){
-delete storeData.categories[cat][name];
-await saveData();
-updateUI();
-alert('Удалено');
-}
-}
-
-async function changeBalance(){
-const user=document.getElementById('searchUser').value;
-const amount=parseFloat(document.getElementById('addBalance').value);
-if(storeData.users[user]&&!isNaN(amount)){
-storeData.users[user].balance+=amount;
-await saveData();
-alert('Баланс изменен');
-}
-}
-
-async function changeAdminPass(){
-const pass=document.getElementById('newAdminPass').value;
-if(pass){
-storeData.adminPass=pass;
-await saveData();
-alert('Пароль изменен');
-}
-}
-
-loadData();
-</script>
+    // Initialize
+    loadData();
+  </script>
 </body>
 </html>
