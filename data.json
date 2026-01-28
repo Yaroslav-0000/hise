@@ -1,25 +1,31 @@
 {
   "adminPassword": "4321",
-  "users": {
-    "user1": {
-      "password": "pass1",
-      "balance": 10,
-      "address": "",
-      "createdAt": "2024-01-01T10:00:00.000Z"
-    }
-  },
   "categories": {
     "Электроника": {
+      "123": {
+        "price": 1,
+        "stock": 1,
+        "description": "1111111",
+        "updatedAt": "2026-01-28T13:52:48.703Z"
+      },
       "Смартфон": {
+        "description": "Флагманский смартфон",
         "price": 1000,
         "stock": 5,
-        "description": "Флагманский смартфон",
         "updatedAt": "2024-01-10T00:00:00.000Z"
       }
     }
   },
+  "orders": [],
   "productImages": {
     "Электроника|Смартфон": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAgACADASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
   },
-  "orders": []
+  "users": {
+    "user1": {
+      "address": "",
+      "balance": 10,
+      "createdAt": "2024-01-01T10:00:00.000Z",
+      "password": "pass1"
+    }
+  }
 }
