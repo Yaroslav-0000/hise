@@ -10,6 +10,12 @@
       }
     },
     "Электроника": {
+      "123": {
+        "price": 0,
+        "stock": 1,
+        "description": "Этот товар позволяет какать.",
+        "updatedAt": "2026-01-28T11:37:41.065Z"
+      },
       "Ноутбук": {
         "description": "Игровой ноутбук",
         "price": 25000,
@@ -38,17 +44,17 @@
       "createdAt": "2024-01-01T10:00:00.000Z",
       "password": "pass1"
     },
-    "z9h1": {
-      "password": "123",
-      "balance": 1000,
-      "address": "",
-      "createdAt": "2026-01-28T10:58:43.956Z"
-    },
     "z9": {
-      "password": "ggg",
-      "balance": 1000,
       "address": "",
-      "createdAt": "2026-01-28T11:02:31.091Z"
+      "balance": 1000,
+      "createdAt": "2026-01-28T11:02:31.091Z",
+      "password": "ggg"
+    },
+    "z9h1": {
+      "address": "",
+      "balance": 1000,
+      "createdAt": "2026-01-28T10:58:43.956Z",
+      "password": "123"
     }
   }
 }
