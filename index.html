@@ -789,6 +789,9 @@
     <div id="notificationContainer"></div>
 
     <script>
+        localStorage.removeItem('currentUser');
+        location.reload();
+        
         // ===================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====================
         let storeData = {
             users: {},
@@ -921,7 +924,7 @@
             
             closeAuthModal();
             updateUI();
-            showNotification('Регистрация успешна! Вам начислено 1000₴', 'success');
+            showNotification('Регистрация успешна! Вам начислено 10₴', 'success');
         }
 
         function logout() {
