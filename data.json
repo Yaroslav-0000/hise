@@ -1,24 +1,42 @@
 {
-  "adminPass": "log21",
-  "categories": {
-    "q": {},
-    "Электроника": {
-      "Телефон": {
-        "price": 500,
-        "stock": 10
-      }
-    },
-    "qq": {}
-  },
-  "orders": [],
+  "adminPassword": "log21",
   "users": {
     "user1": {
-      "balance": 10000000001000,
-      "password": "pass1"
+      "password": "pass1",
+      "balance": 1000,
+      "address": "ул. Примерная, 123",
+      "createdAt": "2024-01-01T10:00:00.000Z"
     },
-    "yaroslav": {
-      "balance": 0,
-      "password": "log21"
+    "test": {
+      "password": "test",
+      "balance": 500,
+      "address": "",
+      "createdAt": "2024-01-02T14:30:00.000Z"
     }
-  }
+  },
+  "categories": {
+    "Электроника": {
+      "Смартфон": {
+        "price": 10000,
+        "stock": 5,
+        "description": "Флагманский смартфон",
+        "updatedAt": "2024-01-10T00:00:00.000Z"
+      },
+      "Ноутбук": {
+        "price": 25000,
+        "stock": 3,
+        "description": "Игровой ноутбук",
+        "updatedAt": "2024-01-10T00:00:00.000Z"
+      }
+    },
+    "Книги": {
+      "Программирование": {
+        "price": 500,
+        "stock": 20,
+        "description": "Учебник по программированию",
+        "updatedAt": "2024-01-05T00:00:00.000Z"
+      }
+    }
+  },
+  "orders": []
 }
