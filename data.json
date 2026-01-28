@@ -38,21 +38,21 @@
   },
   "orders": [
     {
-      "id": "1769601272248",
-      "user": "1234",
-      "product": "Провода",
       "category": "Электроника",
+      "createdAt": "2026-01-28T11:54:32.248Z",
+      "id": "1769601272248",
       "price": 5,
-      "status": "pending",
-      "createdAt": "2026-01-28T11:54:32.248Z"
+      "product": "Провода",
+      "status": "completed",
+      "user": "1234"
     }
   ],
   "users": {
     "1234": {
-      "password": "log21",
-      "balance": 5,
       "address": "",
-      "createdAt": "2026-01-28T11:53:25.345Z"
+      "balance": 5,
+      "createdAt": "2026-01-28T11:53:25.345Z",
+      "password": "log21"
     },
     "test": {
       "address": "",
