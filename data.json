@@ -6,7 +6,8 @@
         "price": 500,
         "stock": 10
       }
-    }
+    },
+    "q": {}
   },
   "orders": [],
   "users": {
