@@ -203,4 +203,72 @@
       const cat = document.getElementById("categoryName").value;
       const name = document.getElementById("productName").value;
       if (storeData.categories[cat] && storeData.categories[cat][name]) {
-        delete
+        delete storeData.categories[cat][name];
+        // Если категория стала пустой, можно удалить её тоже
+        if (Object.keys(storeData.categories[cat]).length === 0) {
+          delete storeData.categories[cat];
+        }
+        await saveData();
+        alert("Товар удалён");
+        loadData();
+      } else {
+        alert("Товар не найден");
+      }
+    }
+
+    async function saveData() {
+      await fetch("/save_data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(storeData)
+      });
+    }
+
+    // Дополнительные функции для улучшения UI
+    function hideLoginPanel() {
+      document.getElementById("loginPanel").classList.add("hidden");
+    }
+
+    function showUserInfo() {
+      if (currentUser) {
+        document.getElementById("balance").textContent = storeData.users[currentUser].balance;
+        // Можно добавить отображение имени пользователя
+        const userInfo = document.createElement("div");
+        userInfo.innerHTML = `<p>Вы вошли как: ${currentUser}</p>`;
+        document.body.prepend(userInfo);
+      }
+    }
+
+    // Инициализация при загрузке страницы
+    window.onload = function() {
+      loadData();
+      // Проверка, если пользователь уже вошел (можно сохранять в localStorage)
+      const savedUser = localStorage.getItem("currentUser");
+      if (savedUser && storeData.users[savedUser]) {
+        currentUser = savedUser;
+        hideLoginPanel();
+        showUserInfo();
+      }
+    };
+
+    // Функция выхода
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem("currentUser");
+      document.getElementById("loginPanel").classList.remove("hidden");
+      document.getElementById("balance").textContent = "0";
+      alert("Вы вышли из системы");
+    }
+
+    // Добавляем кнопку выхода
+    document.addEventListener("DOMContentLoaded", function() {
+      const logoutBtn = document.createElement("button");
+      logoutBtn.textContent = "Выйти";
+      logoutBtn.onclick = logout;
+      logoutBtn.style.margin = "10px";
+      logoutBtn.style.padding = "5px 15px";
+      document.body.appendChild(logoutBtn);
+    });
+  </script>
+</body>
+</html>
