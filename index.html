@@ -713,39 +713,55 @@
             </div>
 
             <!-- УПРАВЛЕНИЕ ТОВАРАМИ -->
-            <div id="adminProducts" class="tab-content">
-                <h3 class="mb-20">🛍️ Управление товарами</h3>
-                <div class="card">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label class="form-label">Категория:</label>
-                            <select class="form-control" id="productCategorySelect">
-                                <option value="">Выберите категорию</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Название товара:</label>
-                            <input type="text" class="form-control" id="productName" placeholder="Введите название">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Цена (₴):</label>
-                            <input type="number" class="form-control" id="productPrice" placeholder="0.00" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Количество:</label>
-                            <input type="number" class="form-control" id="productStock" placeholder="0">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Описание:</label>
-                            <textarea class="form-control" id="productDescription" rows="3" placeholder="Описание товара"></textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" onclick="saveProduct()">💾 Сохранить товар</button>
-                            <button class="btn btn-secondary" onclick="deleteProduct()">🗑️ Удалить товар</button>
-                        </div>
-                    </div>
-                </div>
+<div id="adminProducts" class="tab-content">
+    <h3 class="mb-20">🛍️ Управление товарами</h3>
+    <div class="card">
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">Категория:</label>
+                <select class="form-control" id="productCategorySelect">
+                    <option value="">Выберите категорию</option>
+                </select>
             </div>
+            <div class="form-group">
+                <label class="form-label">Название товара:</label>
+                <input type="text" class="form-control" id="productName" placeholder="Введите название">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Цена (₴):</label>
+                <input type="number" class="form-control" id="productPrice" placeholder="0.00" step="0.01">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Количество:</label>
+                <input type="number" class="form-control" id="productStock" placeholder="0">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Описание:</label>
+                <textarea class="form-control" id="productDescription" rows="3" placeholder="Описание товара"></textarea>
+            </div>
+            
+            <!-- ДОБАВЛЯЕМ ПОЛЕ ДЛЯ КАРТИНКИ -->
+            <div class="form-group">
+                <label class="form-label">Изображение товара (PNG, необязательно):</label>
+                <input type="file" class="form-control" id="productImageFile" accept=".png,image/png">
+                <small style="color: var(--gray); font-size: 0.9rem;">Максимум 1MB, будет сжато до 100x100 пикселей</small>
+                <div id="productImagePreviewContainer" style="display: none; margin-top: 10px;">
+                    <p>Предпросмотр:</p>
+                    <img id="productImagePreview" class="image-preview" alt="Предпросмотр">
+                    <p id="productImageInfo" style="font-size: 0.8rem; color: var(--gray);"></p>
+                </div>
+                <button type="button" class="btn btn-outline btn-sm mt-10" onclick="clearProductImage()" style="display: none;" id="clearImageBtn">
+                    ❌ Удалить изображение
+                </button>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="saveProduct()">💾 Сохранить товар</button>
+                <button class="btn btn-secondary" onclick="deleteProduct()">🗑️ Удалить товар</button>
+            </div>
+        </div>
+    </div>
+</div>
 
             <!-- УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ -->
             <div id="adminUsers" class="tab-content">
