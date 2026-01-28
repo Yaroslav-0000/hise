@@ -789,8 +789,10 @@
     <div id="notificationContainer"></div>
 
     <script>
-        localStorage.removeItem('currentUser');
-        location.reload();
+        function clearLocalStorage() {
+            localStorage.removeItem('currentUser');
+            location.reload();
+        }
         
         // ===================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====================
         let storeData = {
@@ -1205,7 +1207,7 @@
         }
 
         function closeAdminAuthModal() {
-            document.getElementById('adminAuthModal').classList.remove('active');
+            
         }
 
         function loginAdmin() {
