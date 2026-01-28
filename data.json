@@ -1,6 +1,22 @@
 {
-"users":{"user1":{"balance":1000,"password":"pass1"}},
-"categories":{"Электроника":{"Телефон":{"price":500,"stock":10}}},
-"orders":[],
-"adminPass":"log21"
+  "adminPass": "log21",
+  "categories": {
+    "Электроника": {
+      "Телефон": {
+        "price": 500,
+        "stock": 10
+      }
+    }
+  },
+  "orders": [],
+  "users": {
+    "user1": {
+      "balance": 1000,
+      "password": "pass1"
+    },
+    "yaroslav": {
+      "balance": 0,
+      "password": "log21"
+    }
+  }
 }
