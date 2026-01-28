@@ -1,60 +1,25 @@
 {
   "adminPassword": "4321",
+  "users": {
+    "user1": {
+      "password": "pass1",
+      "balance": 10,
+      "address": "",
+      "createdAt": "2024-01-01T10:00:00.000Z"
+    }
+  },
   "categories": {
-    "Книги": {
-      "Программирование": {
-        "description": "Учебник по программированию",
-        "price": 500,
-        "stock": 20,
-        "updatedAt": "2024-01-05T00:00:00.000Z"
-      }
-    },
     "Электроника": {
-      "Ноутбук": {
-        "description": "Игровой ноутбук",
-        "price": 25000,
-        "stock": 3,
-        "updatedAt": "2024-01-10T00:00:00.000Z"
-      },
       "Смартфон": {
-        "description": "Флагманский смартфон",
-        "price": 10000,
+        "price": 1000,
         "stock": 5,
+        "description": "Флагманский смартфон",
         "updatedAt": "2024-01-10T00:00:00.000Z"
       }
     }
   },
-  "orders": [],
-  "users": {
-    "1234": {
-      "password": "4321",
-      "balance": 10,
-      "address": "",
-      "createdAt": "2026-01-28T13:41:20.360Z"
-    },
-    "test": {
-      "address": "",
-      "balance": 500,
-      "createdAt": "2024-01-02T14:30:00.000Z",
-      "password": "test"
-    },
-    "user1": {
-      "address": "ул. Примерная, 123",
-      "balance": 1000,
-      "createdAt": "2024-01-01T10:00:00.000Z",
-      "password": "pass1"
-    },
-    "z9": {
-      "address": "",
-      "balance": 1000,
-      "createdAt": "2026-01-28T11:02:31.091Z",
-      "password": "ggg"
-    },
-    "z9h1": {
-      "address": "",
-      "balance": 1000,
-      "createdAt": "2026-01-28T10:58:43.956Z",
-      "password": "123"
-    }
-  }
+  "productImages": {
+    "Электроника|Смартфон": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAgACADASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+  },
+  "orders": []
 }
