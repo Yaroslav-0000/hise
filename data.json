@@ -1,18 +1,18 @@
 {
   "adminPass": "log21",
   "categories": {
+    "q": {},
     "Электроника": {
       "Телефон": {
         "price": 500,
         "stock": 10
       }
-    },
-    "q": {}
+    }
   },
   "orders": [],
   "users": {
     "user1": {
-      "balance": 1000,
+      "balance": 10000000001000,
       "password": "pass1"
     },
     "yaroslav": {
