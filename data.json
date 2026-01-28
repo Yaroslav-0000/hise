@@ -26,6 +26,12 @@
   },
   "orders": [],
   "users": {
+    "1234": {
+      "password": "4321",
+      "balance": 10,
+      "address": "",
+      "createdAt": "2026-01-28T13:41:20.360Z"
+    },
     "test": {
       "address": "",
       "balance": 500,
