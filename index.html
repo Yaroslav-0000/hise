@@ -530,6 +530,57 @@
                 font-size: 13px;
             }
         }
+
+
+
+
+
+
+                /* ===== КАРТИНКИ ТОВАРОВ ===== */
+        .product-image-container {
+            height: 200px;
+            background: linear-gradient(45deg, var(--light), var(--gray));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .image-placeholder {
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .image-upload-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 10px;
+            border-radius: var(--radius);
+        }
     </style>
 </head>
 <body>
@@ -789,9 +840,36 @@
     </div>
 
     <!-- КОНТЕЙНЕР ДЛЯ УВЕДОМЛЕНИЙ -->
+        <!-- МОДАЛЬНОЕ ОКНО ЗАГРУЗКИ ИЗОБРАЖЕНИЯ -->
+    <div id="imageUploadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🖼️ Загрузка изображения</h3>
+                <button class="close-btn" onclick="closeImageUploadModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Выберите изображение (до 1MB):</label>
+                    <input type="file" class="form-control" id="imageFileInput" accept="image/*">
+                </div>
+                <div id="imagePreviewContainer" style="display: none;">
+                    <p>Предпросмотр (100x100):</p>
+                    <img id="imagePreview" class="image-preview" alt="Предпросмотр">
+                    <p id="imageInfo" style="font-size: 0.9rem; color: var(--gray); margin-top: 5px;"></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="uploadProductImage()">📤 Загрузить</button>
+                    <button class="btn btn-secondary" onclick="removeProductImage()">🗑️ Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="notificationContainer"></div>
 
     <script>
+
+                // ===================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ДЛЯ КАРТИНОК =====================
+        let editingImageFor = null; // Для какого товара загружаем изображение {category, name}
         function clearLocalStorage() {
             localStorage.removeItem('currentUser');
             location.reload();
@@ -802,7 +880,8 @@
             users: {},
             categories: {},
             orders: [],
-            adminPassword: "log21"
+            adminPassword: "log21",
+            productImages: {}
         };
         
         let currentUser = null;
@@ -960,7 +1039,7 @@
             }
         }
 
-        function loadProducts() {
+                function loadProducts() {
             const container = document.getElementById('productsContainer');
             
             if (!storeData.categories || Object.keys(storeData.categories).length === 0) {
@@ -978,10 +1057,22 @@
             
             for (const [categoryName, category] of Object.entries(storeData.categories)) {
                 for (const [productName, product] of Object.entries(category)) {
+                    // Проверяем есть ли изображение для товара
+                    const imageKey = `${categoryName}|${productName}`;
+                    const productImage = storeData.productImages?.[imageKey];
+                    
                     html += `
                         <div class="product-card">
-                            <div class="product-image">
-                                <div>📦</div>
+                            <div class="product-image-container">
+                                ${productImage ? 
+                                    `<img src="${productImage}" class="product-image" alt="${productName}">` : 
+                                    `<div class="image-placeholder">📦</div>`
+                                }
+                                ${isAdmin ? `
+                                    <button class="image-upload-btn" onclick="showImageUploadModal('${categoryName}', '${productName}')" title="Изменить изображение">
+                                        📷
+                                    </button>
+                                ` : ''}
                             </div>
                             <div class="product-info">
                                 <h3 class="product-title">${productName}</h3>
@@ -1005,20 +1096,37 @@
             container.innerHTML = html;
         }
 
-        function showProduct(category, name) {
+                function showProduct(category, name) {
             currentProduct = { category, name };
             const product = storeData.categories[category][name];
             
-            document.getElementById('productModalTitle').textContent = name;
-            document.getElementById('productModalPrice').textContent = `${product.price} ₴`;
-            document.getElementById('productModalDescription').textContent = product.description || 'Описание отсутствует';
-            document.getElementById('productModalStock').innerHTML = `
-                <div class="product-stock ${product.stock === 0 ? 'out' : ''}">
-                    ${product.stock === 0 ? '❌ Нет в наличии' : `✅ В наличии: ${product.stock} шт.`}
+            // Проверяем есть ли изображение
+            const imageKey = `${category}|${name}`;
+            const productImage = storeData.productImages?.[imageKey];
+            
+            // Создаем содержимое модального окна динамически
+            const modal = document.getElementById('productModal');
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>${name}</h3>
+                        <button class="close-btn" onclick="closeProductModal()">×</button>
+                    </div>
+                    <div class="modal-body">
+                        ${productImage ? `<img src="${productImage}" class="image-preview" alt="${name}" style="margin-bottom: 20px;">` : ''}
+                        <div class="product-price">${product.price} ₴</div>
+                        <p>${product.description || 'Описание отсутствует'}</p>
+                        <div class="product-meta">
+                            <div class="product-stock ${product.stock === 0 ? 'out' : ''}">
+                                ${product.stock === 0 ? '❌ Нет в наличии' : `✅ В наличии: ${product.stock} шт.`}
+                            </div>
+                            <button class="btn btn-primary" onclick="buyCurrentProduct()">🛒 Купить сейчас</button>
+                        </div>
+                    </div>
                 </div>
             `;
             
-            document.getElementById('productModal').classList.add('active');
+            modal.classList.add('active');
         }
 
         function closeProductModal() {
@@ -1618,11 +1726,16 @@
         }
 
         // ===================== ИНИЦИАЛИЗАЦИЯ =====================
-        async function init() {
+                async function init() {
             console.log('🚀 Инициализация магазина...');
             
             // Загружаем данные с сервера
             storeData = await get_data();
+            
+            // Инициализируем productImages если нет
+            if (!storeData.productImages) {
+                storeData.productImages = {};
+            }
             
             // Проверяем сохраненного пользователя
             const savedUser = localStorage.getItem('currentUser');
@@ -1642,8 +1755,166 @@
             // Загружаем товары
             loadProducts();
             
+            // Добавляем обработчик для предпросмотра изображений
+            document.getElementById('imageFileInput').addEventListener('change', previewImage);
+            
             console.log('✅ Магазин готов к работе!');
             showNotification('Добро пожаловать в SuperShop!', 'success');
+        }
+
+
+
+                // ===================== ФУНКЦИИ ДЛЯ КАРТИНОК =====================
+        function showImageUploadModal(category, productName) {
+            editingImageFor = { category, productName };
+            
+            // Проверяем есть ли уже изображение
+            const imageKey = `${category}|${productName}`;
+            const existingImage = storeData.productImages?.[imageKey];
+            
+            if (existingImage) {
+                document.getElementById('imagePreview').src = existingImage;
+                document.getElementById('imagePreviewContainer').style.display = 'block';
+                document.getElementById('imageInfo').textContent = 'Изображение уже загружено (100x100)';
+            } else {
+                document.getElementById('imagePreviewContainer').style.display = 'none';
+            }
+            
+            // Очищаем input файла
+            document.getElementById('imageFileInput').value = '';
+            
+            document.getElementById('imageUploadModal').classList.add('active');
+        }
+
+        function closeImageUploadModal() {
+            document.getElementById('imageUploadModal').classList.remove('active');
+            editingImageFor = null;
+        }
+
+        function previewImage() {
+            const fileInput = document.getElementById('imageFileInput');
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            const preview = document.getElementById('imagePreview');
+            const info = document.getElementById('imageInfo');
+            
+            if (fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+                
+                // Проверяем размер (максимум 1MB)
+                if (file.size > 1024 * 1024) {
+                    showNotification('Файл слишком большой (макс. 1MB)', 'error');
+                    fileInput.value = '';
+                    return;
+                }
+                
+                // Проверяем тип
+                if (!file.type.startsWith('image/')) {
+                    showNotification('Выберите файл изображения', 'error');
+                    fileInput.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Создаем временное изображение для показа предпросмотра
+                    const tempImg = new Image();
+                    tempImg.onload = function() {
+                        // Создаем canvas для показа предпросмотра
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = 100;
+                        canvas.height = 100;
+                        ctx.drawImage(tempImg, 0, 0, 100, 100);
+                        preview.src = canvas.toDataURL('image/jpeg', 0.7);
+                        previewContainer.style.display = 'block';
+                        info.textContent = `Размер: ${Math.round(file.size / 1024)}KB → Сжато до 100x100`;
+                    };
+                    tempImg.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function uploadProductImage() {
+            if (!editingImageFor) return;
+            
+            const fileInput = document.getElementById('imageFileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showNotification('Выберите файл изображения', 'warning');
+                return;
+            }
+            
+            try {
+                showNotification('Сжимаем изображение...', 'info');
+                
+                // Создаем временный элемент img
+                const img = new Image();
+                img.onload = function() {
+                    // Создаем canvas для сжатия
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Устанавливаем размер 100x100
+                    canvas.width = 100;
+                    canvas.height = 100;
+                    
+                    // Рисуем сжатое изображение
+                    ctx.drawImage(img, 0, 0, 100, 100);
+                    
+                    // Получаем base64 строку (JPEG с качеством 70%)
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    
+                    // Сохраняем в storeData
+                    const imageKey = `${editingImageFor.category}|${editingImageFor.productName}`;
+                    if (!storeData.productImages) storeData.productImages = {};
+                    storeData.productImages[imageKey] = compressedBase64;
+                    
+                    // Сохраняем на сервер
+                    save_data(storeData).then(() => {
+                        showNotification('Изображение успешно загружено (100x100)', 'success');
+                        closeImageUploadModal();
+                        
+                        // Обновляем отображение товара
+                        if (document.getElementById('productsTab').classList.contains('active')) {
+                            loadProducts();
+                        }
+                    });
+                };
+                
+                // Загружаем выбранный файл в img
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                
+            } catch (error) {
+                console.error('Ошибка сжатия изображения:', error);
+                showNotification('Ошибка обработки изображения', 'error');
+            }
+        }
+
+        async function removeProductImage() {
+            if (!editingImageFor) return;
+            
+            const imageKey = `${editingImageFor.category}|${editingImageFor.productName}`;
+            if (storeData.productImages && storeData.productImages[imageKey]) {
+                if (!confirm('Удалить изображение товара?')) return;
+                
+                delete storeData.productImages[imageKey];
+                await save_data(storeData);
+                showNotification('Изображение удалено', 'success');
+                closeImageUploadModal();
+                
+                // Обновляем отображение товара
+                if (document.getElementById('productsTab').classList.contains('active')) {
+                    loadProducts();
+                }
+            } else {
+                showNotification('Изображение не найдено', 'warning');
+            }
         }
 
         // Запускаем при загрузке страницы
