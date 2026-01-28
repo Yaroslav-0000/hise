@@ -1,323 +1,206 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>Shop</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial;background:#f5f5f5}
-header{background:#2c3e50;color:white;padding:15px}
-.header{display:flex;justify-content:space-between}
-.balance{background:#34495e;padding:5px 15px;border-radius:20px}
-.btn{padding:8px 16px;border:none;border-radius:4px;cursor:pointer}
-.btn-primary{background:#3498db;color:white}
-.btn-secondary{background:#e74c3c;color:white}
-.container{max-width:1200px;margin:auto;padding:20px}
-.tabs{display:flex;gap:10px;margin-bottom:20px}
-.tab{padding:8px 16px;background:#ecf0f1;border:none;border-radius:4px;cursor:pointer}
-.tab.active{background:#3498db;color:white}
-.tab-content{display:none}
-.tab-content.active{display:block}
-.products{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
-.product{background:white;border-radius:5px;padding:15px}
-.order{background:#f8f9fa;border:1px solid #dee2e6;border-radius:5px;padding:15px;margin-bottom:10px}
-.hidden{display:none}
-</style>
+  <meta charset="UTF-8">
+  <title>Магазин</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+    h1, h2 { text-align: center; }
+    .hidden { display: none; }
+    .product, .category { border: 1px solid #ccc; background: #fff; padding: 10px; margin: 10px; }
+    button { margin: 5px; padding: 5px 10px; }
+    input, textarea { margin: 5px; padding: 5px; width: 90%; }
+    #products { display: flex; flex-wrap: wrap; justify-content: center; }
+    #products .product { width: 250px; }
+    #loginPanel, #adminPanel { margin: 20px; padding: 10px; background: #eee; }
+  </style>
 </head>
 <body>
-<header>
-<div class="container">
-<div class="header">
-<div>SHOP</div>
-<div>
-<span class="balance">Баланс: <span id="balance">0</span>₴</span>
-<button class="btn" onclick="showTab('auth')" id="authBtn">Войти</button>
-<button class="btn btn-secondary hidden" onclick="logout()" id="logoutBtn">Выйти</button>
-<button class="btn btn-primary" onclick="toggleAdmin()">Админка</button>
-</div>
-</div>
-</div>
-</header>
+  <h1>Магазин</h1>
 
-<div class="container">
-<div class="tabs">
-<button class="tab" onclick="showTab('auth')">Вход</button>
-<button class="tab" onclick="showTab('products')">Товары</button>
-<button class="tab" onclick="showTab('orders')">Мои заказы</button>
-</div>
+  <!-- Панель входа -->
+  <div id="loginPanel">
+    <h2>Вход</h2>
+    <input id="loginUser" placeholder="Имя пользователя">
+    <input id="loginPass" type="password" placeholder="Пароль">
+    <button onclick="register()">Регистрация</button>
+    <button onclick="login()">Войти</button>
+  </div>
 
-<div id="authTab" class="tab-content active">
-<input type="text" id="user" placeholder="Имя" value="user1"><br><br>
-<input type="password" id="pass" placeholder="Пароль" value="pass1"><br><br>
-<button class="btn btn-primary" onclick="login()">Войти</button>
-<button class="btn btn-secondary" onclick="register()">Регистрация</button>
-</div>
+  <h2>Баланс: <span id="balance">0</span>₴</h2>
+  <div id="products"></div>
 
-<div id="productsTab" class="tab-content">
-<div id="products"></div>
-</div>
+  <button onclick="showAdmin()">Админка</button>
 
-<div id="ordersTab" class="tab-content">
-<div id="myOrders"></div>
-</div>
+  <!-- Админка -->
+  <div id="adminPanel" class="hidden">
+    <h2>Админка</h2>
+    <label>Пароль: <input type="password" id="adminPass"></label>
+    <button onclick="loginAdmin()">Войти</button>
 
-<div id="adminPanel" class="tab-content hidden">
-<div class="tabs">
-<button class="tab active" onclick="adminTab('adminOrders')">Заказы</button>
-<button class="tab" onclick="adminTab('adminProducts')">Товары</button>
-<button class="tab" onclick="adminTab('adminUsers')">Пользователи</button>
-</div>
-<div id="adminOrders" class="tab-content active"></div>
-<div id="adminProducts" class="tab-content">
-<input type="text" id="cat" placeholder="Категория"><br>
-<input type="text" id="prodName" placeholder="Название"><br>
-<input type="number" id="price" placeholder="Цена"><br>
-<input type="number" id="stock" placeholder="Количество"><br>
-<button class="btn btn-primary" onclick="addProduct()">Добавить</button>
-<button class="btn btn-secondary" onclick="removeProduct()">Удалить</button>
-</div>
-<div id="adminUsers" class="tab-content">
-<input type="text" id="searchUser" placeholder="Имя пользователя"><br>
-<input type="number" id="addBalance" placeholder="Сумма"><br>
-<button class="btn btn-primary" onclick="changeBalance()">Изм.баланс</button>
-</div>
-</div>
-</div>
+    <div id="adminActions" class="hidden">
+      <h3>Управление балансами</h3>
+      <input id="userName" placeholder="Имя пользователя">
+      <input id="amount" type="number" placeholder="Сумма">
+      <button onclick="updateBalance()">Добавить к балансу</button>
 
-<script>
-let storeData = {users:{},categories:{},orders:[],adminPass:"log21"};
-let currentUser = null;
-let isAdmin = false;
+      <h3>Управление категориями</h3>
+      <input id="categoryName" placeholder="Категория">
+      <button onclick="createCategory()">Создать категорию</button>
+      <button onclick="deleteCategory()">Удалить категорию</button>
 
-async function loadData(){
-const res = await fetch('/get_data');
-storeData = await res.json();
-if(!storeData.adminPass) storeData.adminPass="log21";
-updateUI();
-}
+      <h3>Управление товарами</h3>
+      <input id="productName" placeholder="Название товара">
+      <input id="productPrice" type="number" placeholder="Цена">
+      <input id="productStock" type="number" placeholder="В наличии">
+      <textarea id="productDesc" placeholder="Описание"></textarea>
+      <textarea id="productSpecs" placeholder='Характеристики (JSON)'></textarea>
+      <button onclick="addProduct()">Добавить/Обновить товар</button>
+      <button onclick="deleteProduct()">Удалить товар</button>
+    </div>
+  </div>
 
-async function saveData(){
-await fetch('/save_data',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify(storeData)
-});
-}
+  <script>
+    let storeData = {};
+    let currentUser = null;
 
-function updateUI(){
-updateProducts();
-updateOrders();
-updateBalance();
-}
+    async function loadData() {
+      const res = await fetch("/get_data");
+      storeData = await res.json();
+      if (currentUser && storeData.users[currentUser]) {
+        document.getElementById("balance").textContent = storeData.users[currentUser].balance;
+      }
+      renderProducts();
+    }
 
-function updateProducts(){
-const div = document.getElementById('products');
-div.innerHTML='';
-for(let cat in storeData.categories){
-for(let prod in storeData.categories[cat]){
-let p = storeData.categories[cat][prod];
-div.innerHTML+=`
-<div class="product">
-<h3>${prod}</h3>
-<p>Цена: ${p.price}₴</p>
-<p>В наличии: ${p.stock}</p>
-<button class="btn btn-primary" onclick="buy('${cat}','${prod}')">Купить</button>
-</div>`;
-}}
-}
+    function renderProducts() {
+      const container = document.getElementById("products");
+      container.innerHTML = "";
+      for (const [catName, products] of Object.entries(storeData.categories || {})) {
+        const catDiv = document.createElement("div");
+        catDiv.className = "category";
+        catDiv.innerHTML = `<h3>Категория: ${catName}</h3>`;
+        for (const [prodName, prod] of Object.entries(products)) {
+          const div = document.createElement("div");
+          div.className = "product";
+          div.innerHTML = `
+            <h4>${prodName}</h4>
+            <p><b>Цена:</b> ${prod.price}₴</p>
+            <p><b>В наличии:</b> ${prod.stock}</p>
+            <p>${prod.description}</p>
+            <pre>${JSON.stringify(prod.specs, null, 2)}</pre>
+            <button onclick="buyProduct('${catName}','${prodName}')">Купить</button>
+          `;
+          catDiv.appendChild(div);
+        }
+        container.appendChild(catDiv);
+      }
+    }
 
-function updateOrders(){
-const div = document.getElementById('myOrders');
-div.innerHTML='';
-if(!currentUser) return;
-let userOrders = storeData.orders.filter(o=>o.user===currentUser);
-userOrders.forEach(o=>{
-let status = o.status||'ожидает';
-div.innerHTML+=`
-<div class="order">
-<p>${o.product} - ${o.price}₴</p>
-<p>Статус: ${status}</p>
-${status==='ожидает'?`<button class="btn btn-secondary" onclick="cancelOrder('${o.id}')">Отменить</button>`:''}
-</div>`;
-});
-}
+    async function buyProduct(cat, prod) {
+      if (!currentUser) { alert("Сначала войдите!"); return; }
+      const userBalance = storeData.users[currentUser].balance;
+      const product = storeData.categories[cat][prod];
+      if (userBalance >= product.price && product.stock > 0) {
+        storeData.users[currentUser].balance -= product.price;
+        product.stock -= 1;
+        await saveData();
+        alert("Покупка успешна!");
+        loadData();
+      } else {
+        alert("Недостаточно средств или товара нет в наличии!");
+      }
+    }
 
-function updateBalance(){
-if(currentUser && storeData.users[currentUser]){
-document.getElementById('balance').textContent=storeData.users[currentUser].balance;
-document.getElementById('authBtn').classList.add('hidden');
-document.getElementById('logoutBtn').classList.remove('hidden');
-}else{
-document.getElementById('balance').textContent='0';
-document.getElementById('authBtn').classList.remove('hidden');
-document.getElementById('logoutBtn').classList.add('hidden');
-}
-}
+    function register() {
+      const user = document.getElementById("loginUser").value;
+      const pass = document.getElementById("loginPass").value;
+      if (!storeData.users[user]) {
+        storeData.users[user] = { balance: 0, password: pass };
+        currentUser = user;
+        saveData();
+        alert("Регистрация успешна!");
+        loadData();
+      } else {
+        alert("Пользователь уже существует!");
+      }
+    }
 
-function showTab(tab){
-document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden'));
-event.target.classList.add('active');
-document.getElementById(tab+'Tab').classList.remove('hidden');
-if(tab==='orders') updateOrders();
-}
+    function login() {
+      const user = document.getElementById("loginUser").value;
+      const pass = document.getElementById("loginPass").value;
+      if (storeData.users[user] && storeData.users[user].password === pass) {
+        currentUser = user;
+        alert("Вход успешен!");
+        loadData();
+      } else {
+        alert("Неверные данные!");
+      }
+    }
 
-function login(){
-let user=document.getElementById('user').value;
-let pass=document.getElementById('pass').value;
-if(user==='admin'&&pass===storeData.adminPass){
-currentUser='admin';isAdmin=true;
-showTab('products');updateUI();
-alert('Админ вошел');
-return;
-}
-if(storeData.users[user]&&storeData.users[user].password===pass){
-currentUser=user;isAdmin=false;
-showTab('products');updateUI();
-}else alert('Неверно');
-}
+    function showAdmin() {
+      document.getElementById("adminPanel").classList.remove("hidden");
+    }
 
-function register(){
-let user=document.getElementById('user').value;
-let pass=document.getElementById('pass').value;
-if(!storeData.users[user]){
-storeData.users[user]={balance:1000,password:pass};
-currentUser=user;
-saveData();
-showTab('products');updateUI();
-alert('Регистрация успешна');
-}else alert('Уже есть');
-}
+    function loginAdmin() {
+      const pass = document.getElementById("adminPass").value;
+      if (pass === "log21") {
+        document.getElementById("adminActions").classList.remove("hidden");
+      } else {
+        alert("Неверный пароль");
+      }
+    }
 
-function logout(){
-currentUser=null;isAdmin=false;
-showTab('auth');updateUI();
-}
+    async function updateBalance() {
+      const user = document.getElementById("userName").value;
+      const amount = parseInt(document.getElementById("amount").value);
+      if (!storeData.users[user]) storeData.users[user] = { balance: 0, password: "" };
+      storeData.users[user].balance += amount;
+      await saveData();
+      alert("Баланс обновлён");
+      loadData();
+    }
 
-async function buy(cat,prod){
-if(!currentUser){alert('Войдите');return;}
-let user=storeData.users[currentUser];
-let product=storeData.categories[cat][prod];
-if(user.balance>=product.price&&product.stock>0){
-user.balance-=product.price;
-product.stock--;
-let order={
-id:Date.now().toString(),
-user:currentUser,
-product:prod,
-category:cat,
-price:product.price,
-status:'ожидает',
-createdAt:new Date().toISOString()
-};
-storeData.orders.push(order);
-await saveData();
-updateUI();
-alert('Куплено');
-}else alert('Нельзя купить');
-}
+    async function createCategory() {
+      const cat = document.getElementById("categoryName").value;
+      if (!storeData.categories[cat]) storeData.categories[cat] = {};
+      await saveData();
+      alert("Категория создана");
+      loadData();
+    }
 
-async function cancelOrder(id){
-let order=storeData.orders.find(o=>o.id===id);
-if(order&&order.user===currentUser&&order.status==='ожидает'){
-order.status='отменен';
-let user=storeData.users[currentUser];
-if(user)user.balance+=order.price;
-if(storeData.categories[order.category]&&storeData.categories[order.category][order.product]){
-storeData.categories[order.category][order.product].stock++;
-}
-await saveData();
-updateUI();
-}
-}
+    async function deleteCategory() {
+      const cat = document.getElementById("categoryName").value;
+      if (storeData.categories[cat]) {
+        delete storeData.categories[cat];
+        await saveData();
+        alert("Категория удалена");
+        loadData();
+      } else {
+        alert("Категория не найдена");
+      }
+    }
 
-function toggleAdmin(){
-if(!isAdmin){
-let pass=prompt('Пароль админа:');
-if(pass===storeData.adminPass){
-isAdmin=true;
-document.getElementById('adminPanel').classList.remove('hidden');
-showAdminOrders();
-}else alert('Неверно');
-}else{
-document.getElementById('adminPanel').classList.toggle('hidden');
-}
-}
+    async function addProduct() {
+      const cat = document.getElementById("categoryName").value;
+      const name = document.getElementById("productName").value;
+      const price = parseInt(document.getElementById("productPrice").value);
+      const stock = parseInt(document.getElementById("productStock").value);
+      const desc = document.getElementById("productDesc").value;
+      let specs;
+      try { specs = JSON.parse(document.getElementById("productSpecs").value || "{}"); }
+      catch { alert("Ошибка в JSON характеристик"); return; }
 
-function adminTab(tab){
-document.querySelectorAll('#adminPanel .tab').forEach(t=>t.classList.remove('active'));
-document.querySelectorAll('#adminPanel .tab-content').forEach(t=>t.classList.add('hidden'));
-event.target.classList.add('active');
-document.getElementById(tab).classList.remove('hidden');
-}
+      if (!storeData.categories[cat]) storeData.categories[cat] = {};
+      storeData.categories[cat][name] = { price, stock, description: desc, specs };
+      await saveData();
+      alert("Товар добавлен/обновлён");
+      loadData();
+    }
 
-function showAdminOrders(){
-let div=document.getElementById('adminOrders');
-div.innerHTML='';
-storeData.orders.forEach((o,i)=>{
-div.innerHTML+=`
-<div class="order">
-<p>${o.user}: ${o.product} - ${o.price}₴</p>
-<p>Статус: ${o.status||'ожидает'}</p>
-<button class="btn" onclick="changeOrderStatus('${o.id}','выполнен')">Выполнен</button>
-<button class="btn" onclick="changeOrderStatus('${o.id}','отменен')">Отменить</button>
-</div>`;
-});
-}
-
-async function changeOrderStatus(id,status){
-let order=storeData.orders.find(o=>o.id===id);
-if(order){
-let old=order.status||'ожидает';
-order.status=status;
-if(old==='ожидает'&&status==='отменен'){
-let user=storeData.users[order.user];
-if(user)user.balance+=order.price;
-if(storeData.categories[order.category]&&storeData.categories[order.category][order.product]){
-storeData.categories[order.category][order.product].stock++;
-}
-}
-await saveData();
-showAdminOrders();
-}
-}
-
-async function addProduct(){
-let cat=document.getElementById('cat').value;
-let name=document.getElementById('prodName').value;
-let price=parseFloat(document.getElementById('price').value);
-let stock=parseInt(document.getElementById('stock').value);
-if(cat&&name&&price&&stock){
-if(!storeData.categories[cat])storeData.categories[cat]={};
-storeData.categories[cat][name]={price,stock};
-await saveData();
-updateProducts();
-alert('Добавлен');
-}
-}
-
-async function removeProduct(){
-let cat=document.getElementById('cat').value;
-let name=document.getElementById('prodName').value;
-if(storeData.categories[cat]&&storeData.categories[cat][name]){
-delete storeData.categories[cat][name];
-await saveData();
-updateProducts();
-alert('Удален');
-}
-}
-
-async function changeBalance(){
-let user=document.getElementById('searchUser').value;
-let amount=parseFloat(document.getElementById('addBalance').value);
-if(storeData.users[user]&&!isNaN(amount)){
-storeData.users[user].balance+=amount;
-await saveData();
-alert('Баланс изменен');
-}
-}
-
-loadData();
-</script>
-</body>
-</html>
+    async function deleteProduct() {
+      const cat = document.getElementById("categoryName").value;
+      const name = document.getElementById("productName").value;
+      if (storeData.categories[cat] && storeData.categories[cat][name]) {
+        delete
