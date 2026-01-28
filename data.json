@@ -25,7 +25,7 @@
       "Провода": {
         "description": "Апи",
         "price": 5,
-        "stock": 1,
+        "stock": 0,
         "updatedAt": "2026-01-28T11:52:14.661Z"
       },
       "Смартфон": {
@@ -36,11 +36,21 @@
       }
     }
   },
-  "orders": [],
+  "orders": [
+    {
+      "id": "1769601272248",
+      "user": "1234",
+      "product": "Провода",
+      "category": "Электроника",
+      "price": 5,
+      "status": "pending",
+      "createdAt": "2026-01-28T11:54:32.248Z"
+    }
+  ],
   "users": {
     "1234": {
       "password": "log21",
-      "balance": 10,
+      "balance": 5,
       "address": "",
       "createdAt": "2026-01-28T11:53:25.345Z"
     },
