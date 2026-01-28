@@ -22,22 +22,28 @@
         "stock": 3,
         "updatedAt": "2024-01-10T00:00:00.000Z"
       },
+      "Провода": {
+        "description": "Апи",
+        "price": 5,
+        "stock": 1,
+        "updatedAt": "2026-01-28T11:52:14.661Z"
+      },
       "Смартфон": {
         "description": "Флагманский смартфон",
         "price": 10000,
         "stock": 5,
         "updatedAt": "2024-01-10T00:00:00.000Z"
-      },
-      "Провода": {
-        "price": 5,
-        "stock": 1,
-        "description": "Апи",
-        "updatedAt": "2026-01-28T11:52:14.661Z"
       }
     }
   },
   "orders": [],
   "users": {
+    "1234": {
+      "password": "log21",
+      "balance": 10,
+      "address": "",
+      "createdAt": "2026-01-28T11:53:25.345Z"
+    },
     "test": {
       "address": "",
       "balance": 500,
