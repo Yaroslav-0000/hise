@@ -50,7 +50,7 @@
   "users": {
     "1234": {
       "address": "",
-      "balance": 5,
+      "balance": 101,
       "createdAt": "2026-01-28T11:53:25.345Z",
       "password": "log21"
     },
