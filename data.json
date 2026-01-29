@@ -26,6 +26,12 @@
       "balance": 10,
       "createdAt": "2024-01-01T10:00:00.000Z",
       "password": "pass1"
+    },
+    "З": {
+      "password": "123",
+      "balance": 10,
+      "address": "",
+      "createdAt": "2026-01-29T10:09:05.828Z"
     }
   }
 }
