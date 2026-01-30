@@ -10,7 +10,7 @@ GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 
 REPO = "Yaroslav-0000/hise"
 INDEX_FILE = "index.html"
-SHOP_DIMA_FILE = "index.html"
+SHOP_DIMA_FILE = "shop_dima.html"
 DATA_FILE = "data.json"
 
 @app.route("/")
