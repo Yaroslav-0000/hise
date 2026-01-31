@@ -33,7 +33,7 @@ def shop_dima():
     return html_code
 
 @app.route("/create")
-def shop_dima():
+def create():
     url = f"https://api.github.com/repos/{REPO}/contents/{CREATE_D_FILE}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     r = requests.get(url, headers=headers)
