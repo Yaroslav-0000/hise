@@ -32,7 +32,7 @@ def shop_dima():
     html_code = base64.b64decode(data["content"]).decode("utf-8")
     return html_code
 
-@app.route("/create2d")
+@app.route("/create")
 def shop_dima():
     url = f"https://api.github.com/repos/{REPO}/contents/{CREATE_D_FILE}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
