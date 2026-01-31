@@ -11,6 +11,7 @@ GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 REPO = "Yaroslav-0000/hise"
 INDEX_FILE = "index.html"
 SHOP_DIMA_FILE = "shop_dima.html"
+CREATE_2D_FILE = "Create2D.html"
 DATA_FILE = "data.json"
 
 @app.route("/")
@@ -25,6 +26,15 @@ def home():
 @app.route("/shop_dima")
 def shop_dima():
     url = f"https://api.github.com/repos/{REPO}/contents/{SHOP_DIMA_FILE}"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+    r = requests.get(url, headers=headers)
+    data = r.json()
+    html_code = base64.b64decode(data["content"]).decode("utf-8")
+    return html_code
+
+@app.route("/create2d")
+def shop_dima():
+    url = f"https://api.github.com/repos/{REPO}/contents/{CREATE_2D_FILE}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     r = requests.get(url, headers=headers)
     data = r.json()
