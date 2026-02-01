@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>Create2D</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
 html, body {
     margin: 0;
@@ -9,12 +10,18 @@ html, body {
     overflow: hidden;
     width: 100%;
     height: 100%;
+    touch-action: none;
 }
 * {
     user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 canvas {
     display: block;
+    cursor: crosshair;
+    touch-action: none;
 }
 #ui {
     position: absolute;
@@ -22,6 +29,10 @@ canvas {
     left: 0;
     width: 100%;
     height: 100%;
+    pointer-events: none;
+}
+#ui > * {
+    pointer-events: auto;
 }
 #MainScreen {
     display: flex;
@@ -48,18 +59,14 @@ header {
 }
 .ButtonMainScreen {
     position: absolute;
-
     border-radius: 10px;
     border-style: none;
     background-image: linear-gradient(to bottom, #007bff, #002650);
     color: tomato;
-
     font-size: 24px;
     font-weight: bold;
-
     width: 200px;
     height: 50px;
-
     top: 160px;
 }
 .ButtonMainScreen:active {
@@ -69,18 +76,14 @@ header {
     scale: 105%;
 }
 .ButtonWorldsScreen {
-
     border-radius: 10px;
     border-style: none;
     background-image: linear-gradient(to bottom, #009dff, #003c50);
     color: tomato;
-
     font-size: 34px;
     font-weight: bold;
-
     margin: 5px;
     padding: 5px;
-
     width: 50px;
     height: 50px;
 }
@@ -94,17 +97,280 @@ header {
     position: absolute;
     transform: translateX(-50%);
     display: flex;
-
     flex-direction: row;
     align-items: center;
-
     background-color: #002650;
     border-radius: 10px;
-
     gap: 5px;
-
     left: 50%;
     bottom: 10px;
+}
+.Worlds {
+    position: absolute;
+    transform: translateX(-50%);
+    background-color: #01243b;
+    display: flex;
+    gap: 5px;
+    left: 50%;
+    top: 10px;
+    width: 300px;
+    height: calc(100% - 100px);
+    overflow-y: auto;
+    flex-direction: column;
+    border: 5px solid #064276;
+    border-radius: 5px;
+}
+.world, .world_cursor {
+    width: calc(100% - 20px);
+    height: 50px;
+    background-color: #001f33;
+    border: 3px solid #064276;
+    border-radius: 5px;
+    margin: 2px;
+    padding: 2px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.world_cursor {
+    border: 3px solid #016d07;
+    background-color: #002a33;
+    box-shadow: 0 0 10px rgba(0, 109, 7, 0.3);
+    transform: scale(1.02);
+}
+.world:hover:not(.world_cursor) {
+    border-color: #007bff;
+    background-color: #002a40;
+}
+.Worlds::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+.Worlds::-webkit-scrollbar-track {
+    background: #001a33;
+    border-radius: 6px;
+    border: 1px solid #064276;
+}
+.Worlds::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #007bff, #002650); 
+    border-radius: 6px;
+    border: 2px solid #001a33;
+}
+.Worlds::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #0056b3, #001a33);
+}
+.Worlds::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(to bottom, #002650, #007bff);
+}
+
+/* Игровой UI */
+#gameUI {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+    backdrop-filter: blur(5px);
+}
+
+/* Кнопки управления для телефона */
+.mobile-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    display: none;
+    gap: 15px;
+}
+
+.mobile-controls.visible {
+    display: flex;
+}
+
+.movement-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 5px;
+}
+
+.action-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-left: 20px;
+}
+
+.control-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: rgba(0, 123, 255, 0.7);
+    border: 3px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    touch-action: manipulation;
+    transition: all 0.1s ease;
+    backdrop-filter: blur(5px);
+}
+
+.control-btn:active {
+    background-color: rgba(0, 86, 179, 0.9);
+    transform: scale(0.95);
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+.control-btn.up {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.control-btn.left {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.control-btn.right {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.control-btn.down {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.jump-btn {
+    background-color: rgba(40, 167, 69, 0.7);
+}
+
+.break-btn {
+    background-color: rgba(220, 53, 69, 0.7);
+}
+
+.place-btn {
+    background-color: rgba(23, 162, 184, 0.7);
+}
+
+/* Для планшетов и больших телефонов */
+@media (min-width: 768px) {
+    .control-btn {
+        width: 70px;
+        height: 70px;
+        font-size: 28px;
+    }
+}
+
+/* Для маленьких телефонов */
+@media (max-width: 360px) {
+    .control-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    .mobile-controls {
+        bottom: 10px;
+        left: 10px;
+    }
+}
+
+/* Скрыть кнопки управления на ПК */
+@media (min-width: 1024px) {
+    .mobile-controls {
+        display: none !important;
+    }
+}
+
+/* Блок для ломания */
+.block-breaking {
+    position: absolute;
+    pointer-events: none;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+.block-breaking-animation {
+    animation: breakPulse 0.5s infinite alternate;
+}
+
+@keyframes breakPulse {
+    from { border-color: rgba(255, 255, 255, 0.8); }
+    to { border-color: rgba(255, 0, 0, 0.8); }
+}
+
+/* Инвентарь на телефоне */
+.mobile-inventory {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    gap: 5px;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+}
+
+.mobile-inventory.visible {
+    display: flex;
+}
+
+.inventory-slot {
+    width: 50px;
+    height: 50px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.inventory-slot.active {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.inventory-slot img {
+    max-width: 80%;
+    max-height: 80%;
+}
+
+/* Для горизонтальной ориентации */
+@media (orientation: landscape) and (max-height: 500px) {
+    .mobile-controls {
+        bottom: 5px;
+        left: 5px;
+    }
+    
+    .mobile-inventory {
+        bottom: 5px;
+        right: 5px;
+    }
+    
+    .control-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+    
+    .inventory-slot {
+        width: 40px;
+        height: 40px;
+    }
 }
 </style>
 </head>
@@ -119,8 +385,49 @@ header {
     </div>
     <div id="WorldsScreen">
         <div class="WorldsMenuButtons">
-            <button class="ButtonWorldsScreen">⬆</button>
-            <button class="ButtonWorldsScreen">⬇</button>
+            <button class="ButtonWorldsScreen" onclick="saveCurrentWorld()">💾</button>
+            <button class="ButtonWorldsScreen" onclick="createNewWorld()">+</button>
+            <button class="ButtonWorldsScreen" onclick="enterSelectedWorld()">▶️</button>
+        </div>
+        <div class="Worlds" id="worldsContainer">
+            <!-- Миры будут добавляться здесь -->
+        </div>
+    </div>
+    <div id="gameUI" style="display: none;">
+        <div>FPS: <span id="fps">0</span></div>
+        <div>Блоков: <span id="blockCount">0</span></div>
+        <div>Позиция камеры: <span id="cameraPos">0, 0</span></div>
+        <div>Выбранный блок: <span id="selectedBlock">нет</span></div>
+    </div>
+    
+    <!-- Кнопки управления для телефона -->
+    <div class="mobile-controls" id="mobileControls">
+        <div class="movement-controls">
+            <div class="control-btn up" data-action="up">↑</div>
+            <div class="control-btn left" data-action="left">←</div>
+            <div class="control-btn down" data-action="down">↓</div>
+            <div class="control-btn right" data-action="right">→</div>
+        </div>
+        <div class="action-controls">
+            <div class="control-btn jump-btn" data-action="jump" title="Прыжок">↥</div>
+            <div class="control-btn break-btn" data-action="break" title="Ломать блок">⛏️</div>
+            <div class="control-btn place-btn" data-action="place" title="Ставить блок">⬛</div>
+        </div>
+    </div>
+    
+    <!-- Инвентарь на телефоне -->
+    <div class="mobile-inventory" id="mobileInventory">
+        <div class="inventory-slot active" data-block="grass">
+            <div style="color: white; font-size: 12px;">Трава</div>
+        </div>
+        <div class="inventory-slot" data-block="dirt">
+            <div style="color: white; font-size: 12px;">Земля</div>
+        </div>
+        <div class="inventory-slot" data-block="stone">
+            <div style="color: white; font-size: 12px;">Камень</div>
+        </div>
+        <div class="inventory-slot" data-block="wood">
+            <div style="color: white; font-size: 12px;">Дерево</div>
         </div>
     </div>
 </div>
@@ -129,48 +436,678 @@ header {
 const canvas = document.getElementById('world');
 const ctx = canvas.getContext('2d');
 
-let texturesData  = {
-    "textures": {
-        "BackGroundUsersHub": "data:image/png;base64,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"
+// Определяем мобильное устройство
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+// Система миров
+let worlds = JSON.parse(localStorage.getItem('create2d_worlds')) || [];
+let selectedWorldIndex = -1;
+let currentWorld = null;
+let isInGame = false;
+
+
+
+// Система блоков
+let blocks = {
+    "grass": {
+        id: "grass",
+        name: "Трава",
+        texture: "grass",
+        hardness: 1,
+        durability: 100,
+        drops: ["dirt"],
+        color: "#7CFC00"
     },
-    "meta": {
-        "total_textures": 1,
-        "errors": 0,
-        "max_size": 128,
-        "quality": "high",
-        "generator": "Create2D Texture Packer"
+    "dirt": {
+        id: "dirt",
+        name: "Земля",
+        texture: "dirt",
+        hardness: 0.5,
+        durability: 50,
+        drops: ["dirt"],
+        color: "#8B4513"
+    },
+    "stone": {
+        id: "stone",
+        name: "Камень",
+        texture: "stone",
+        hardness: 1.5,
+        durability: 150,
+        drops: ["stone"],
+        color: "#808080"
+    },
+    "wood": {
+        id: "wood",
+        name: "Дерево",
+        texture: "wood",
+        hardness: 1.2,
+        durability: 120,
+        drops: ["wood"],
+        color: "#8B4513"
     }
 };
 
-const textures = {};
-for (const [name, dataUrl] of Object.entries(texturesData.textures)) {
-    const img = new Image();
-    img.src = dataUrl;
-    textures[name] = img;
+texturesData = {
+  "textures": {
+    "BackGroundUsersHub": "data:image/png;base64,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"
+  },
+  "meta": {
+    "total_textures": 1,
+    "errors": 0,
+    "max_size": 128,
+    "quality": "high",
+    "generator": "Create2D Texture Packer"
+  }
+};
+
+// Предполагаем, что текстуры уже загружены в texturesData
+// Предположим, что texturesData уже существует где-то в коде
+let textures = {};
+if (typeof texturesData !== 'undefined' && texturesData.textures) {
+    for (const [name, dataUrl] of Object.entries(texturesData.textures)) {
+        const img = new Image();
+        img.src = dataUrl;
+        textures[name] = img;
+    }
+} else {
+    console.warn('texturesData не определен. Используем заглушки.');
 }
 
-canvas.style.display = 'none';
+// Камера
+let camera = {
+    x: 0,
+    y: 0,
+    zoom: 1,
+    width: 0,
+    height: 0
+};
 
+// Управление камерой
+let keys = {};
+let cameraSpeed = 10;
+let isBreakingBlock = false;
+let breakingBlockProgress = 0;
+let breakingBlockX = 0;
+let breakingBlockY = 0;
+let breakingBlockId = null;
+let selectedBlockId = "grass";
+
+// Загруженные блоки мира
+let worldBlocks = {};
+
+// Тайминги
+let lastTime = 0;
+let fps = 0;
+let frameCount = 0;
+let lastFpsUpdate = 0;
+
+// Инициализация
+function init() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    camera.width = canvas.width;
+    camera.height = canvas.height;
+    
+    // Показываем кнопки управления на мобильных устройствах
+    if (isMobile) {
+        document.getElementById('mobileControls').classList.add('visible');
+        document.getElementById('mobileInventory').classList.add('visible');
+        
+        // Настройка обработчиков для мобильных кнопок
+        setupMobileControls();
+    }
+    
+    // Инициализация миров
+    displayWorlds();
+    setupWorldEventListeners();
+    
+    // Обработчики клавиатуры
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+    
+    // Обработчики мыши
+    canvas.addEventListener('mousedown', handleMouseDown);
+    canvas.addEventListener('mouseup', handleMouseUp);
+    canvas.addEventListener('mousemove', handleMouseMove);
+    
+    // Обработчики тач-событий
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+    canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    
+    // Автосохранение каждые 30 секунд
+    setInterval(autoSaveWorld, 30000);
+    
+    // Сохранение при закрытии
+    window.addEventListener('beforeunload', function(e) {
+        saveCurrentWorld();
+    });
+}
+
+// Отображение миров
+function displayWorlds() {
+    const worldsContainer = document.getElementById('worldsContainer');
+    worldsContainer.innerHTML = '';
+    
+    worlds.forEach((world, index) => {
+        const worldElement = document.createElement('div');
+        worldElement.className = index === selectedWorldIndex ? 'world_cursor' : 'world';
+        worldElement.dataset.index = index;
+        
+        worldElement.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; height: 100%; padding: 5px;">
+                <div>
+                    <h4 style="margin: 0; color: #fff;">${world.name}</h4>
+                    <p style="margin: 0; color: #aaa; font-size: 12px;">
+                        ${new Date(world.lastPlayed).toLocaleDateString()}
+                    </p>
+                </div>
+                <button class="delete-btn" style="
+                    background: red;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    padding: 5px 10px;
+                    cursor: pointer;
+                    font-size: 12px;
+                " onclick="event.stopPropagation(); deleteWorld(${index})">Удалить</button>
+            </div>
+        `;
+        
+        worldElement.addEventListener('click', () => selectWorld(index));
+        worldElement.addEventListener('dblclick', () => enterWorld(index));
+        
+        worldsContainer.appendChild(worldElement);
+    });
+    
+    // Кнопка создания нового мира
+    const newWorldBtn = document.createElement('div');
+    newWorldBtn.className = 'world';
+    newWorldBtn.innerHTML = `
+        <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+            <h4 style="margin: 0; color: #0af;">+ Создать новый мир</h4>
+        </div>
+    `;
+    newWorldBtn.style.cursor = 'pointer';
+    newWorldBtn.addEventListener('click', createNewWorld);
+    worldsContainer.appendChild(newWorldBtn);
+}
+
+function setupWorldEventListeners() {
+    // Обработчики уже установлены в displayWorlds
+}
+
+// Выбор мира
+function selectWorld(index) {
+    selectedWorldIndex = index;
+    displayWorlds();
+}
+
+// Вход в мир
+function enterWorld(index) {
+    if (index >= 0 && worlds[index]) {
+        currentWorld = worlds[index];
+        selectedWorldIndex = index;
+        
+        // Загружаем блоки мира
+        worldBlocks = currentWorld.data.blocks || {};
+        
+        // Скрываем UI миров
+        document.getElementById('WorldsScreen').style.display = 'none';
+        document.getElementById('gameUI').style.display = 'block';
+        canvas.style.display = 'block';
+        
+        // Показываем кнопки управления на мобильных устройствах
+        if (isMobile) {
+            document.getElementById('mobileControls').style.display = 'flex';
+            document.getElementById('mobileInventory').style.display = 'flex';
+        }
+        
+        isInGame = true;
+        
+        // Запускаем игровой цикл
+        requestAnimationFrame(gameLoop);
+    }
+}
+
+// Создание нового мира
+function createNewWorld() {
+    const worldName = prompt('Введите название мира:', `Мир ${worlds.length + 1}`);
+    if (!worldName) return;
+    
+    const newWorld = {
+        id: Date.now(),
+        name: worldName,
+        created: new Date().toISOString(),
+        lastPlayed: new Date().toISOString(),
+        data: {
+            blocks: {},
+            player: { x: 0, y: 0 }
+        }
+    };
+    
+    worlds.push(newWorld);
+    saveWorlds();
+    displayWorlds();
+    selectWorld(worlds.length - 1);
+}
+
+// Сохранение миров
+function saveWorlds() {
+    localStorage.setItem('create2d_worlds', JSON.stringify(worlds));
+}
+
+// Сохранение текущего мира
+function saveCurrentWorld() {
+    if (currentWorld && isInGame) {
+        currentWorld.data.blocks = worldBlocks;
+        currentWorld.lastPlayed = new Date().toISOString();
+        saveWorlds();
+        console.log(`Мир "${currentWorld.name}" сохранен`);
+    }
+}
+
+// Автосохранение
+function autoSaveWorld() {
+    if (isInGame) {
+        saveCurrentWorld();
+    }
+}
+
+// Удаление мира
+function deleteWorld(index) {
+    if (confirm(`Удалить мир "${worlds[index].name}"?`)) {
+        worlds.splice(index, 1);
+        saveWorlds();
+        displayWorlds();
+        selectedWorldIndex = -1;
+    }
+}
+
+// Вход в выбранный мир
+function enterSelectedWorld() {
+    if (selectedWorldIndex >= 0) {
+        enterWorld(selectedWorldIndex);
+    } else {
+        alert('Выберите мир сначала!');
+    }
+}
+
+// Настройка мобильных контролов
+function setupMobileControls() {
+    const controlButtons = document.querySelectorAll('.control-btn');
+    controlButtons.forEach(btn => {
+        btn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            btn.classList.add('active');
+            const action = btn.dataset.action;
+            handleMobileAction(action, true);
+        });
+        
+        btn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            btn.classList.remove('active');
+            const action = btn.dataset.action;
+            handleMobileAction(action, false);
+        });
+    });
+    
+    // Обработчики для инвентаря
+    const inventorySlots = document.querySelectorAll('.inventory-slot');
+    inventorySlots.forEach(slot => {
+        slot.addEventListener('click', () => {
+            inventorySlots.forEach(s => s.classList.remove('active'));
+            slot.classList.add('active');
+            selectedBlockId = slot.dataset.block;
+            document.getElementById('selectedBlock').textContent = blocks[selectedBlockId].name;
+        });
+    });
+}
+
+// Обработка мобильных действий
+function handleMobileAction(action, isPressed) {
+    keys[action] = isPressed;
+}
+
+// Обработка клавиатуры
+function handleKeyDown(e) {
+    keys[e.key.toLowerCase()] = true;
+    
+    // Переключение блоков
+    if (e.key >= '1' && e.key <= '4') {
+        const blockKeys = Object.keys(blocks);
+        const index = parseInt(e.key) - 1;
+        if (index < blockKeys.length) {
+            selectedBlockId = blockKeys[index];
+            document.getElementById('selectedBlock').textContent = blocks[selectedBlockId].name;
+            
+            // Обновляем активный слот на мобильном устройстве
+            if (isMobile) {
+                const inventorySlots = document.querySelectorAll('.inventory-slot');
+                inventorySlots.forEach(slot => slot.classList.remove('active'));
+                const activeSlot = document.querySelector(`.inventory-slot[data-block="${selectedBlockId}"]`);
+                if (activeSlot) activeSlot.classList.add('active');
+            }
+        }
+    }
+}
+
+function handleKeyUp(e) {
+    keys[e.key.toLowerCase()] = false;
+}
+
+// Обработка мыши
+function handleMouseDown(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const worldX = Math.floor((x / camera.zoom + camera.x) / 32);
+    const worldY = Math.floor((y / camera.zoom + camera.y) / 32);
+    
+    if (e.button === 0) { // Левая кнопка - ломание
+        startBreakingBlock(worldX, worldY);
+    } else if (e.button === 2) { // Правая кнопка - установка
+        placeBlock(worldX, worldY, selectedBlockId);
+    }
+}
+
+function handleMouseUp(e) {
+    if (e.button === 0) {
+        stopBreakingBlock();
+    }
+}
+
+function handleMouseMove(e) {
+    if (isBreakingBlock) {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const worldX = Math.floor((x / camera.zoom + camera.x) / 32);
+        const worldY = Math.floor((y / camera.zoom + camera.y) / 32);
+        
+        if (worldX !== breakingBlockX || worldY !== breakingBlockY) {
+            stopBreakingBlock();
+        }
+    }
+}
+
+// Обработка тач-событий
+function handleTouchStart(e) {
+    e.preventDefault();
+    if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        
+        const worldX = Math.floor((x / camera.zoom + camera.x) / 32);
+        const worldY = Math.floor((y / camera.zoom + camera.y) / 32);
+        
+        // Для тач-устройств используем долгое нажатие для ломания
+        startBreakingBlock(worldX, worldY);
+    }
+}
+
+function handleTouchEnd(e) {
+    e.preventDefault();
+    stopBreakingBlock();
+}
+
+function handleTouchMove(e) {
+    e.preventDefault();
+    if (isBreakingBlock && e.touches.length === 1) {
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        
+        const worldX = Math.floor((x / camera.zoom + camera.x) / 32);
+        const worldY = Math.floor((y / camera.zoom + camera.y) / 32);
+        
+        if (worldX !== breakingBlockX || worldY !== breakingBlockY) {
+            stopBreakingBlock();
+        }
+    }
+}
+
+// Начало ломания блока
+function startBreakingBlock(x, y) {
+    const blockKey = `${x},${y}`;
+    if (worldBlocks[blockKey]) {
+        isBreakingBlock = true;
+        breakingBlockX = x;
+        breakingBlockY = y;
+        breakingBlockId = worldBlocks[blockKey].id;
+        breakingBlockProgress = 0;
+        
+        // Показываем анимацию ломания
+        showBreakingAnimation(x, y);
+    }
+}
+
+// Остановка ломания
+function stopBreakingBlock() {
+    isBreakingBlock = false;
+    breakingBlockProgress = 0;
+    hideBreakingAnimation();
+}
+
+// Показ анимации ломания
+function showBreakingAnimation(x, y) {
+    hideBreakingAnimation();
+    
+    const breakingDiv = document.createElement('div');
+    breakingDiv.className = 'block-breaking block-breaking-animation';
+    breakingDiv.id = 'breakingAnimation';
+    breakingDiv.style.left = `${(x * 32 - camera.x) * camera.zoom}px`;
+    breakingDiv.style.top = `${(y * 32 - camera.y) * camera.zoom}px`;
+    breakingDiv.style.width = `${32 * camera.zoom}px`;
+    breakingDiv.style.height = `${32 * camera.zoom}px`;
+    
+    document.getElementById('ui').appendChild(breakingDiv);
+}
+
+// Скрытие анимации ломания
+function hideBreakingAnimation() {
+    const breakingDiv = document.getElementById('breakingAnimation');
+    if (breakingDiv) {
+        breakingDiv.remove();
+    }
+}
+
+// Обновление ломания блока
+function updateBlockBreaking(deltaTime) {
+    if (isBreakingBlock && breakingBlockId) {
+        const block = blocks[breakingBlockId];
+        if (block) {
+            breakingBlockProgress += deltaTime * 100; // Скорость ломания
+            
+            if (breakingBlockProgress >= block.durability) {
+                // Блок сломан
+                const blockKey = `${breakingBlockX},${breakingBlockY}`;
+                delete worldBlocks[blockKey];
+                stopBreakingBlock();
+                
+                // Автосохранение
+                autoSaveWorld();
+            }
+        }
+    }
+}
+
+// Установка блока
+function placeBlock(x, y, blockId) {
+    const blockKey = `${x},${y}`;
+    if (!worldBlocks[blockKey] && blocks[blockId]) {
+        worldBlocks[blockKey] = {
+            id: blockId,
+            x: x,
+            y: y
+        };
+        
+        // Автосохранение
+        autoSaveWorld();
+    }
+}
+
+// Обновление камеры
+function updateCamera(deltaTime) {
+    // Управление с клавиатуры
+    if (keys['arrowup'] || keys['w'] || keys['up']) camera.y -= cameraSpeed / camera.zoom;
+    if (keys['arrowdown'] || keys['s'] || keys['down']) camera.y += cameraSpeed / camera.zoom;
+    if (keys['arrowleft'] || keys['a'] || keys['left']) camera.x -= cameraSpeed / camera.zoom;
+    if (keys['arrowright'] || keys['d'] || keys['right']) camera.x += cameraSpeed / camera.zoom;
+    
+    // Управление с мобильных кнопок
+    if (keys['up']) camera.y -= cameraSpeed / camera.zoom;
+    if (keys['down']) camera.y += cameraSpeed / camera.zoom;
+    if (keys['left']) camera.x -= cameraSpeed / camera.zoom;
+    if (keys['right']) camera.x += cameraSpeed / camera.zoom;
+    
+    // Зум
+    if (keys['+'] || keys['=']) camera.zoom = Math.min(camera.zoom + 0.1, 3);
+    if (keys['-'] || keys['_']) camera.zoom = Math.max(camera.zoom - 0.1, 0.5);
+}
+
+// Рендер блоков
+function renderBlocks() {
+    // Определяем видимую область
+    const startX = Math.floor(camera.x / 32) - 5;
+    const endX = Math.ceil((camera.x + camera.width / camera.zoom) / 32) + 5;
+    const startY = Math.floor(camera.y / 32) - 5;
+    const endY = Math.ceil((camera.y + camera.height / camera.zoom) / 32) + 5;
+    
+    // Рендерим только видимые блоки
+    for (let x = startX; x < endX; x++) {
+        for (let y = startY; y < endY; y++) {
+            const blockKey = `${x},${y}`;
+            const block = worldBlocks[blockKey];
+            
+            if (block) {
+                const blockData = blocks[block.id];
+                if (blockData) {
+                    // Рендерим блок
+                    const screenX = (x * 32 - camera.x) * camera.zoom;
+                    const screenY = (y * 32 - camera.y) * camera.zoom;
+                    const size = 32 * camera.zoom;
+                    
+                    ctx.fillStyle = blockData.color;
+                    ctx.fillRect(screenX, screenY, size, size);
+                    
+                    // Рамка
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(screenX, screenY, size, size);
+                    
+                    // Если есть текстура, рисуем её
+                    if (textures[blockData.texture]) {
+                        try {
+                            ctx.drawImage(textures[blockData.texture], screenX, screenY, size, size);
+                        } catch (e) {
+                            // Если текстура не загружена, используем цвет
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Рендер сетки
+function renderGrid() {
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.lineWidth = 1;
+    
+    const gridSize = 32 * camera.zoom;
+    const startX = Math.floor(camera.x / 32) * 32;
+    const startY = Math.floor(camera.y / 32) * 32;
+    const endX = camera.x + camera.width / camera.zoom;
+    const endY = camera.y + camera.height / camera.zoom;
+    
+    // Вертикальные линии
+    for (let x = startX; x < endX; x += 32) {
+        const screenX = (x - camera.x) * camera.zoom;
+        ctx.beginPath();
+        ctx.moveTo(screenX, 0);
+        ctx.lineTo(screenX, canvas.height);
+        ctx.stroke();
+    }
+    
+    // Горизонтальные линии
+    for (let y = startY; y < endY; y += 32) {
+        const screenY = (y - camera.y) * camera.zoom;
+        ctx.beginPath();
+        ctx.moveTo(0, screenY);
+        ctx.lineTo(canvas.width, screenY);
+        ctx.stroke();
+    }
+}
+
+// Игровой цикл
+function gameLoop(currentTime) {
+    if (!isInGame) return;
+    
+    // Вычисляем deltaTime
+    const deltaTime = (currentTime - lastTime) / 1000;
+    lastTime = currentTime;
+    
+    // Обновляем FPS
+    frameCount++;
+    if (currentTime - lastFpsUpdate >= 1000) {
+        fps = Math.round((frameCount * 1000) / (currentTime - lastFpsUpdate));
+        frameCount = 0;
+        lastFpsUpdate = currentTime;
+        document.getElementById('fps').textContent = fps;
+    }
+    
+    // Обновляем состояние
+    updateCamera(deltaTime);
+    updateBlockBreaking(deltaTime);
+    
+    // Очищаем canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Рендерим фон
+    ctx.fillStyle = '#87CEEB';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Рендерим сетку
+    renderGrid();
+    
+    // Рендерим блоки
+    renderBlocks();
+    
+    // Обновляем UI
+    document.getElementById('blockCount').textContent = Object.keys(worldBlocks).length;
+    document.getElementById('cameraPos').textContent = `${Math.round(camera.x)}, ${Math.round(camera.y)}`;
+    
+    // Продолжаем цикл
+    requestAnimationFrame(gameLoop);
+}
+
+// Ваши существующие функции
 function LoadGame() {
     const MainScreen = document.getElementById('MainScreen');
     const WorldsScreen = document.getElementById('WorldsScreen');
 
-    MainScreen.style.backgroundImage = `url(${texturesData.textures.BackGroundUsersHub})`;
-    MainScreen.style.backgroundSize = 'cover';
-    WorldsScreen.style.backgroundImage = `url(${texturesData.textures.BackGroundUsersHub})`;
-    WorldsScreen.style.backgroundSize = 'cover';
+    // Используем текстуры если они есть
+    if (textures.BackGroundUsersHub) {
+        MainScreen.style.backgroundImage = `url(${textures.BackGroundUsersHub.src})`;
+        MainScreen.style.backgroundSize = 'cover';
+        WorldsScreen.style.backgroundImage = `url(${textures.BackGroundUsersHub.src})`;
+        WorldsScreen.style.backgroundSize = 'cover';
+    } else {
+        // Заглушка если текстуры нет
+        MainScreen.style.backgroundColor = '#001a33';
+        WorldsScreen.style.backgroundColor = '#001a33';
+    }
 
     WorldsScreen.style.display = 'none';
-}
-
-function gameLoop() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    ctx.fillStyle = "red";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-    requestAnimationFrame(gameLoop);
+    
+    // Инициализируем игру
+    init();
 }
 
 function play_button_click() {
@@ -180,9 +1117,11 @@ function play_button_click() {
     WorldsScreen.style.display = 'block';
 }
 
-LoadGame();
-
-gameLoop();
+// Инициализация при загрузке
+window.addEventListener('load', () => {
+    LoadGame();
+    requestAnimationFrame(gameLoop);
+});
 </script>
 </body>
 </html>
