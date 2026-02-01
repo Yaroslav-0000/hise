@@ -10,6 +10,9 @@ html, body {
     width: 100%;
     height: 100%;
 }
+* {
+    user-select: none;
+}
 canvas {
     display: block;
 }
@@ -21,6 +24,15 @@ canvas {
     height: 100%;
 }
 #MainScreen {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+#WorldsScreen {
     display: flex;
     position: absolute;
     top: 0;
@@ -56,6 +68,44 @@ header {
     font-size: 26px;
     scale: 105%;
 }
+.ButtonWorldsScreen {
+
+    border-radius: 10px;
+    border-style: none;
+    background-image: linear-gradient(to bottom, #009dff, #003c50);
+    color: tomato;
+
+    font-size: 34px;
+    font-weight: bold;
+
+    margin: 5px;
+    padding: 5px;
+
+    width: 50px;
+    height: 50px;
+}
+.ButtonWorldsScreen:active {
+    background-image: linear-gradient(to bottom, #003c50, #009dff);
+    color: rgb(255, 87, 57);
+    font-size: 35px;
+    scale: 105%;
+}
+.WorldsMenuButtons {
+    position: absolute;
+    transform: translateX(-50%);
+    display: flex;
+
+    flex-direction: row;
+    align-items: center;
+
+    background-color: #002650;
+    border-radius: 10px;
+
+    gap: 5px;
+
+    left: 50%;
+    bottom: 10px;
+}
 </style>
 </head>
 <body>
@@ -63,10 +113,15 @@ header {
 <div id="ui">
     <div id="MainScreen">
         <h1 style="text-align: center; color: blue;">Create2D</h1>
-        <button class="ButtonMainScreen">Play</button>
+        <button class="ButtonMainScreen" onclick="play_button_click()">Play</button>
         <button class="ButtonMainScreen" style="top: 220px;">Settings</button>
         <button class="ButtonMainScreen" style="top: 280px;">Skins</button>
-        
+    </div>
+    <div id="WorldsScreen">
+        <div class="WorldsMenuButtons">
+            <button class="ButtonWorldsScreen">⬆</button>
+            <button class="ButtonWorldsScreen">⬇</button>
+        </div>
     </div>
 </div>
 
@@ -98,8 +153,14 @@ canvas.style.display = 'none';
 
 function LoadGame() {
     const MainScreen = document.getElementById('MainScreen');
+    const WorldsScreen = document.getElementById('WorldsScreen');
+
     MainScreen.style.backgroundImage = `url(${texturesData.textures.BackGroundUsersHub})`;
     MainScreen.style.backgroundSize = 'cover';
+    WorldsScreen.style.backgroundImage = `url(${texturesData.textures.BackGroundUsersHub})`;
+    WorldsScreen.style.backgroundSize = 'cover';
+
+    WorldsScreen.style.display = 'none';
 }
 
 function gameLoop() {
@@ -110,6 +171,13 @@ function gameLoop() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
         
     requestAnimationFrame(gameLoop);
+}
+
+function play_button_click() {
+    const MainScreen = document.getElementById('MainScreen');
+    const WorldsScreen = document.getElementById('WorldsScreen');
+    MainScreen.style.display = 'none';
+    WorldsScreen.style.display = 'block';
 }
 
 LoadGame();
