@@ -23,7 +23,7 @@
   "users": {
     "user1": {
       "address": "",
-      "balance": 12,
+      "balance": -32,
       "createdAt": "2024-01-01T10:00:00.000Z",
       "password": "pass1"
     },
