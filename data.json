@@ -2,17 +2,17 @@
   "adminPassword": "4321",
   "categories": {
     "Электроника": {
+      "Йцу": {
+        "description": "Йцукнолб",
+        "price": 55555555,
+        "stock": 5000000,
+        "updatedAt": "2026-01-29T10:08:41.159Z"
+      },
       "Смартфон": {
         "description": "Флагманский смартфон",
         "price": 1000,
         "stock": 5,
         "updatedAt": "2024-01-10T00:00:00.000Z"
-      },
-      "Йцу": {
-        "price": 55555555,
-        "stock": 5000000,
-        "description": "Йцукнолб",
-        "updatedAt": "2026-01-29T10:08:41.159Z"
       }
     }
   },
@@ -23,15 +23,15 @@
   "users": {
     "user1": {
       "address": "",
-      "balance": 10,
+      "balance": 12,
       "createdAt": "2024-01-01T10:00:00.000Z",
       "password": "pass1"
     },
     "З": {
-      "password": "123",
-      "balance": 10,
       "address": "",
-      "createdAt": "2026-01-29T10:09:05.828Z"
+      "balance": 10,
+      "createdAt": "2026-01-29T10:09:05.828Z",
+      "password": "123"
     }
   }
 }
