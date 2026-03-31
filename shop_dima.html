@@ -17,6 +17,11 @@
             --gray: #95a5a6;
             --shadow: 0 4px 6px rgba(0,0,0,0.1);
             --radius: 8px;
+            /* ДОБАВЛЯЕМ ПЕРЕМЕННЫЕ ДЛЯ ПЕРСОНАЛИЗАЦИИ */
+            --custom-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --custom-header-bg: white;
+            --custom-card-bg: white;
+            --custom-text: #333;
         }
 
         * {
@@ -27,19 +32,21 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
+            background: var(--custom-bg);
+            color: var(--custom-text);
             line-height: 1.6;
             min-height: 100vh;
+            transition: all 0.3s ease;
         }
 
         /* ===== ШАПКА ===== */
         header {
-            background: white;
+            background: var(--custom-header-bg);
             box-shadow: var(--shadow);
             position: sticky;
             top: 0;
             z-index: 1000;
+            transition: background 0.3s ease;
         }
 
         .header-container {
@@ -146,7 +153,7 @@
 
         /* ===== КАРТОЧКИ ===== */
         .card {
-            background: white;
+            background: var(--custom-card-bg);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             overflow: hidden;
@@ -251,6 +258,7 @@
             margin-bottom: 2rem;
             border-bottom: 2px solid #eee;
             padding-bottom: 10px;
+            flex-wrap: wrap;
         }
 
         .tab {
@@ -490,53 +498,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* ===== АДАПТИВНОСТЬ ===== */
-        @media (max-width: 768px) {
-            .header-container {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .user-info {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 15px;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 10px;
-            }
-            
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .tabs {
-                flex-wrap: wrap;
-            }
-            
-            .btn {
-                padding: 8px 15px;
-                font-size: 13px;
-            }
-        }
-
-
-
-
-
-
-                /* ===== КАРТИНКИ ТОВАРОВ ===== */
+        /* ===== КАРТИНКИ ТОВАРОВ ===== */
         .product-image-container {
             height: 200px;
             background: linear-gradient(45deg, var(--light), var(--gray));
@@ -581,6 +543,53 @@
             margin-top: 10px;
             border-radius: var(--radius);
         }
+
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 1px solid #eee;
+        }
+
+        /* ===== АДАПТИВНОСТЬ ===== */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .btn {
+                padding: 8px 15px;
+                font-size: 13px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -600,8 +609,9 @@
                     <span>👤</span>
                     <span id="authBtnText">Войти</span>
                 </button>
-                <button class="btn btn-outline btn-sm" onclick="clearLocalStorage()" id="authBtn">
-                    <span id="authBtnText">RE</span>
+                <button class="btn btn-outline btn-sm" onclick="clearLocalStorage()" id="clearStorageBtn">
+                    <span>🔄</span>
+                    <span>RE</span>
                 </button>
                 <button class="btn btn-secondary btn-sm hidden" onclick="logout()" id="logoutBtn">
                     <span>🚪</span>
@@ -676,6 +686,8 @@
                 <button class="tab" onclick="showAdminTab('adminProducts')">🛍️ Управление товарами</button>
                 <button class="tab" onclick="showAdminTab('adminUsers')">👥 Управление пользователями</button>
                 <button class="tab" onclick="showAdminTab('adminSettings')">⚙️ Настройки</button>
+                <!-- НОВАЯ ВКЛАДКА ПЕРСОНАЛИЗАЦИИ -->
+                <button class="tab" onclick="showAdminTab('adminPersonalize')">🎨 Персонализация</button>
             </div>
 
             <!-- СТАТИСТИКА -->
@@ -713,55 +725,52 @@
             </div>
 
             <!-- УПРАВЛЕНИЕ ТОВАРАМИ -->
-<div id="adminProducts" class="tab-content">
-    <h3 class="mb-20">🛍️ Управление товарами</h3>
-    <div class="card">
-        <div class="modal-body">
-            <div class="form-group">
-                <label class="form-label">Категория:</label>
-                <select class="form-control" id="productCategorySelect">
-                    <option value="">Выберите категорию</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Название товара:</label>
-                <input type="text" class="form-control" id="productName" placeholder="Введите название">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Цена (₴):</label>
-                <input type="number" class="form-control" id="productPrice" placeholder="0.00" step="0.01">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Количество:</label>
-                <input type="number" class="form-control" id="productStock" placeholder="0">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Описание:</label>
-                <textarea class="form-control" id="productDescription" rows="3" placeholder="Описание товара"></textarea>
-            </div>
-            
-            <!-- ДОБАВЛЯЕМ ПОЛЕ ДЛЯ КАРТИНКИ -->
-            <div class="form-group">
-                <label class="form-label">Изображение товара (PNG, необязательно):</label>
-                <input type="file" class="form-control" id="productImageFile" accept=".png,image/png">
-                <small style="color: var(--gray); font-size: 0.9rem;">Максимум 1MB, будет сжато до 100x100 пикселей</small>
-                <div id="productImagePreviewContainer" style="display: none; margin-top: 10px;">
-                    <p>Предпросмотр:</p>
-                    <img id="productImagePreview" class="image-preview" alt="Предпросмотр">
-                    <p id="productImageInfo" style="font-size: 0.8rem; color: var(--gray);"></p>
+            <div id="adminProducts" class="tab-content">
+                <h3 class="mb-20">🛍️ Управление товарами</h3>
+                <div class="card">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label">Категория:</label>
+                            <select class="form-control" id="productCategorySelect">
+                                <option value="">Выберите категорию</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Название товара:</label>
+                            <input type="text" class="form-control" id="productName" placeholder="Введите название">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Цена (₴):</label>
+                            <input type="number" class="form-control" id="productPrice" placeholder="0.00" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Количество:</label>
+                            <input type="number" class="form-control" id="productStock" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Описание:</label>
+                            <textarea class="form-control" id="productDescription" rows="3" placeholder="Описание товара"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Изображение товара (PNG, необязательно):</label>
+                            <input type="file" class="form-control" id="productImageFile" accept=".png,image/png">
+                            <small style="color: var(--gray); font-size: 0.9rem;">Максимум 1MB, будет сжато до 100x100 пикселей</small>
+                            <div id="productImagePreviewContainer" style="display: none; margin-top: 10px;">
+                                <p>Предпросмотр:</p>
+                                <img id="productImagePreview" class="image-preview" alt="Предпросмотр">
+                                <p id="productImageInfo" style="font-size: 0.8rem; color: var(--gray);"></p>
+                            </div>
+                            <button type="button" class="btn btn-outline btn-sm mt-10" onclick="clearProductImage()" style="display: none;" id="clearImageBtn">
+                                ❌ Удалить изображение
+                            </button>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" onclick="saveProduct()">💾 Сохранить товар</button>
+                            <button class="btn btn-secondary" onclick="deleteProduct()">🗑️ Удалить товар</button>
+                        </div>
+                    </div>
                 </div>
-                <button type="button" class="btn btn-outline btn-sm mt-10" onclick="clearProductImage()" style="display: none;" id="clearImageBtn">
-                    ❌ Удалить изображение
-                </button>
             </div>
-            
-            <div class="modal-footer">
-                <button class="btn btn-primary" onclick="saveProduct()">💾 Сохранить товар</button>
-                <button class="btn btn-secondary" onclick="deleteProduct()">🗑️ Удалить товар</button>
-            </div>
-        </div>
-    </div>
-</div>
 
             <!-- УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ -->
             <div id="adminUsers" class="tab-content">
@@ -788,6 +797,108 @@
                             <input type="password" class="form-control" id="confirmAdminPassword" placeholder="Повторите пароль">
                         </div>
                         <button class="btn btn-primary" onclick="changeAdminPassword()">🔐 Изменить пароль</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ПЕРСОНАЛИЗАЦИЯ (НОВАЯ ВКЛАДКА) -->
+            <div id="adminPersonalize" class="tab-content">
+                <h3 class="mb-20">🎨 Персонализация магазина</h3>
+                <div class="card">
+                    <div class="modal-body">
+                        <h4>🎨 Фон сайта</h4>
+                        <div class="form-group">
+                            <label class="form-label">Тип фона:</label>
+                            <select class="form-control" id="bgType" onchange="toggleBgOptions()">
+                                <option value="gradient">Градиент</option>
+                                <option value="solid">Сплошной цвет</option>
+                                <option value="image">Изображение</option>
+                            </select>
+                        </div>
+                        
+                        <div id="gradientOptions">
+                            <div class="form-group">
+                                <label class="form-label">Градиент:</label>
+                                <select class="form-control" id="gradientPreset" onchange="applyGradientPreset()">
+                                    <option value="135deg, #667eea 0%, #764ba2 100%">Фиолетовый</option>
+                                    <option value="135deg, #f093fb 0%, #f5576c 100%">Розовый</option>
+                                    <option value="135deg, #4facfe 0%, #00f2fe 100%">Голубой</option>
+                                    <option value="135deg, #43e97b 0%, #38f9d7 100%">Зеленый</option>
+                                    <option value="135deg, #fa709a 0%, #fee140 100%">Закат</option>
+                                    <option value="135deg, #30cfd0 0%, #330867 100%">Космос</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Или свой градиент:</label>
+                                <input type="text" class="form-control" id="customGradient" placeholder="135deg, #color1 0%, #color2 100%">
+                            </div>
+                        </div>
+                        
+                        <div id="solidOptions" style="display: none;">
+                            <div class="form-group">
+                                <label class="form-label">Цвет фона:</label>
+                                <input type="color" class="form-control" id="solidColor" value="#667eea" style="height: 50px;">
+                            </div>
+                        </div>
+                        
+                        <div id="imageOptions" style="display: none;">
+                            <div class="form-group">
+                                <label class="form-label">URL изображения:</label>
+                                <input type="text" class="form-control" id="bgImageUrl" placeholder="https://example.com/image.jpg">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Режим фона:</label>
+                                <select class="form-control" id="bgSize">
+                                    <option value="cover">Растянуть (cover)</option>
+                                    <option value="contain">Вписать (contain)</option>
+                                    <option value="repeat">Повторять (repeat)</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-outline btn-sm" onclick="previewBgImage()">🔍 Предпросмотр</button>
+                        </div>
+                        
+                        <hr>
+                        
+                        <h4>🎨 Цветовая схема</h4>
+                        <div class="form-group">
+                            <label class="form-label">Цвет заголовков:</label>
+                            <input type="color" class="form-control" id="primaryColor" value="#2c3e50" style="height: 40px;">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Акцентный цвет:</label>
+                            <input type="color" class="form-control" id="secondaryColor" value="#3498db" style="height: 40px;">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Цвет карточек:</label>
+                            <input type="color" class="form-control" id="cardBgColor" value="#ffffff" style="height: 40px;">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Цвет текста:</label>
+                            <input type="color" class="form-control" id="textColor" value="#333333" style="height: 40px;">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Цвет шапки:</label>
+                            <input type="color" class="form-control" id="headerBgColor" value="#ffffff" style="height: 40px;">
+                        </div>
+                        
+                        <hr>
+                        
+                        <h4>✨ Дополнительные эффекты</h4>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <input type="checkbox" id="enableShadows"> Тени карточек
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <input type="checkbox" id="enableAnimations"> Анимация карточек при наведении
+                            </label>
+                        </div>
+                        
+                        <div class="modal-footer" style="justify-content: space-between;">
+                            <button class="btn btn-secondary" onclick="resetPersonalization()">🔄 Сбросить настройки</button>
+                            <button class="btn btn-primary" onclick="savePersonalization()">💾 Сохранить настройки</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -855,8 +966,7 @@
         </div>
     </div>
 
-    <!-- КОНТЕЙНЕР ДЛЯ УВЕДОМЛЕНИЙ -->
-        <!-- МОДАЛЬНОЕ ОКНО ЗАГРУЗКИ ИЗОБРАЖЕНИЯ -->
+    <!-- МОДАЛЬНОЕ ОКНО ЗАГРУЗКИ ИЗОБРАЖЕНИЯ -->
     <div id="imageUploadModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -880,30 +990,30 @@
             </div>
         </div>
     </div>
+    
     <div id="notificationContainer"></div>
 
     <script>
-
-                // ===================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ДЛЯ КАРТИНОК =====================
-        let editingImageFor = null; // Для какого товара загружаем изображение {category, name}
-        function clearLocalStorage() {
-            localStorage.removeItem('currentUser');
-            location.reload();
-        }
-        
         // ===================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====================
         let storeData = {
             users: {},
             categories: {},
             orders: [],
             adminPassword: "log21",
-            productImages: {}
+            productImages: {},
+            personalization: {}  // НОВОЕ: для хранения настроек персонализации
         };
         
         let currentUser = null;
         let currentProduct = null;
         let isAdmin = false;
+        let editingImageFor = null;
 
+        function clearLocalStorage() {
+            localStorage.removeItem('currentUser');
+            location.reload();
+        }
+        
         // ===================== СИСТЕМНЫЕ ФУНКЦИИ =====================
         async function get_data() {
             try {
@@ -915,7 +1025,7 @@
             } catch (error) {
                 console.error('❌ Ошибка загрузки данных:', error);
                 showNotification('Ошибка загрузки данных', 'error');
-                return { users: {}, categories: {}, orders: [], adminPassword: "log21" };
+                return { users: {}, categories: {}, orders: [], adminPassword: "log21", productImages: {}, personalization: {} };
             }
         }
 
@@ -938,6 +1048,142 @@
             }
         }
 
+        // ===================== ФУНКЦИИ ПЕРСОНАЛИЗАЦИИ (НОВЫЕ) =====================
+        function toggleBgOptions() {
+            const bgType = document.getElementById('bgType').value;
+            document.getElementById('gradientOptions').style.display = bgType === 'gradient' ? 'block' : 'none';
+            document.getElementById('solidOptions').style.display = bgType === 'solid' ? 'block' : 'none';
+            document.getElementById('imageOptions').style.display = bgType === 'image' ? 'block' : 'none';
+        }
+
+        function applyGradientPreset() {
+            const preset = document.getElementById('gradientPreset').value;
+            document.getElementById('customGradient').value = preset;
+        }
+
+        function previewBgImage() {
+            const url = document.getElementById('bgImageUrl').value;
+            if (url) {
+                document.body.style.background = `url(${url})`;
+                const size = document.getElementById('bgSize').value;
+                document.body.style.backgroundSize = size;
+                document.body.style.backgroundPosition = 'center';
+                if (size === 'repeat') {
+                    document.body.style.backgroundRepeat = 'repeat';
+                } else {
+                    document.body.style.backgroundRepeat = 'no-repeat';
+                }
+                showNotification('Предпросмотр фона активирован', 'info');
+            } else {
+                showNotification('Введите URL изображения', 'warning');
+            }
+        }
+
+        function applyPersonalization(pers) {
+            if (!pers) return;
+            
+            // Применяем фон
+            if (pers.bgType === 'gradient') {
+                const gradient = pers.customGradient || pers.gradientPreset || '135deg, #667eea 0%, #764ba2 100%';
+                document.body.style.background = `linear-gradient(${gradient})`;
+            } else if (pers.bgType === 'solid') {
+                document.body.style.background = pers.solidColor || '#667eea';
+            } else if (pers.bgType === 'image' && pers.bgImageUrl) {
+                document.body.style.background = `url(${pers.bgImageUrl})`;
+                document.body.style.backgroundSize = pers.bgSize || 'cover';
+                document.body.style.backgroundPosition = 'center';
+                document.body.style.backgroundRepeat = pers.bgSize === 'repeat' ? 'repeat' : 'no-repeat';
+            }
+            
+            // Применяем цвета
+            if (pers.primaryColor) document.documentElement.style.setProperty('--primary', pers.primaryColor);
+            if (pers.secondaryColor) document.documentElement.style.setProperty('--secondary', pers.secondaryColor);
+            if (pers.cardBgColor) document.documentElement.style.setProperty('--custom-card-bg', pers.cardBgColor);
+            if (pers.textColor) document.documentElement.style.setProperty('--custom-text', pers.textColor);
+            if (pers.headerBgColor) document.documentElement.style.setProperty('--custom-header-bg', pers.headerBgColor);
+            
+            // Применяем тени
+            const shadowValue = pers.enableShadows ? '0 4px 6px rgba(0,0,0,0.1)' : 'none';
+            document.documentElement.style.setProperty('--shadow', shadowValue);
+            
+            // Применяем анимации
+            const transitionValue = pers.enableAnimations ? 'transform 0.3s ease, box-shadow 0.3s ease' : 'none';
+            const cards = document.querySelectorAll('.card, .product-card');
+            cards.forEach(el => {
+                el.style.transition = transitionValue;
+            });
+        }
+
+        function loadPersonalizationToForm() {
+            const pers = storeData.personalization || {};
+            
+            if (pers.bgType) document.getElementById('bgType').value = pers.bgType;
+            if (pers.gradientPreset) document.getElementById('gradientPreset').value = pers.gradientPreset;
+            if (pers.customGradient) document.getElementById('customGradient').value = pers.customGradient;
+            if (pers.solidColor) document.getElementById('solidColor').value = pers.solidColor;
+            if (pers.bgImageUrl) document.getElementById('bgImageUrl').value = pers.bgImageUrl;
+            if (pers.bgSize) document.getElementById('bgSize').value = pers.bgSize;
+            if (pers.primaryColor) document.getElementById('primaryColor').value = pers.primaryColor;
+            if (pers.secondaryColor) document.getElementById('secondaryColor').value = pers.secondaryColor;
+            if (pers.cardBgColor) document.getElementById('cardBgColor').value = pers.cardBgColor;
+            if (pers.textColor) document.getElementById('textColor').value = pers.textColor;
+            if (pers.headerBgColor) document.getElementById('headerBgColor').value = pers.headerBgColor;
+            if (pers.enableShadows !== undefined) document.getElementById('enableShadows').checked = pers.enableShadows;
+            if (pers.enableAnimations !== undefined) document.getElementById('enableAnimations').checked = pers.enableAnimations;
+            
+            toggleBgOptions();
+        }
+
+        async function savePersonalization() {
+            const personalization = {
+                bgType: document.getElementById('bgType').value,
+                gradientPreset: document.getElementById('gradientPreset').value,
+                customGradient: document.getElementById('customGradient').value,
+                solidColor: document.getElementById('solidColor').value,
+                bgImageUrl: document.getElementById('bgImageUrl').value,
+                bgSize: document.getElementById('bgSize').value,
+                primaryColor: document.getElementById('primaryColor').value,
+                secondaryColor: document.getElementById('secondaryColor').value,
+                cardBgColor: document.getElementById('cardBgColor').value,
+                textColor: document.getElementById('textColor').value,
+                headerBgColor: document.getElementById('headerBgColor').value,
+                enableShadows: document.getElementById('enableShadows').checked,
+                enableAnimations: document.getElementById('enableAnimations').checked
+            };
+            
+            storeData.personalization = personalization;
+            await save_data(storeData);
+            
+            applyPersonalization(personalization);
+            showNotification('Настройки персонализации сохранены', 'success');
+        }
+
+        async function resetPersonalization() {
+            if (confirm('Сбросить все настройки персонализации?')) {
+                const defaultPersonalization = {
+                    bgType: 'gradient',
+                    gradientPreset: '135deg, #667eea 0%, #764ba2 100%',
+                    customGradient: '',
+                    solidColor: '#667eea',
+                    bgImageUrl: '',
+                    bgSize: 'cover',
+                    primaryColor: '#2c3e50',
+                    secondaryColor: '#3498db',
+                    cardBgColor: '#ffffff',
+                    textColor: '#333333',
+                    headerBgColor: '#ffffff',
+                    enableShadows: true,
+                    enableAnimations: true
+                };
+                
+                storeData.personalization = defaultPersonalization;
+                await save_data(storeData);
+                loadPersonalizationToForm();
+                applyPersonalization(defaultPersonalization);
+                showNotification('Настройки сброшены к стандартным', 'success');
+            }
+        }
+
         // ===================== ФУНКЦИИ АВТОРИЗАЦИИ =====================
         function showAuthModal() {
             document.getElementById('authModal').classList.add('active');
@@ -956,7 +1202,6 @@
                 return;
             }
             
-            // Проверяем администратора
             if (username === 'admin' && password === storeData.adminPassword) {
                 currentUser = 'admin';
                 isAdmin = true;
@@ -967,7 +1212,6 @@
                 return;
             }
             
-            // Проверяем обычного пользователя
             if (storeData.users[username] && storeData.users[username].password === password) {
                 currentUser = username;
                 isAdmin = false;
@@ -1003,7 +1247,6 @@
                 return;
             }
             
-            // Создаем нового пользователя
             storeData.users[username] = {
                 password: password,
                 balance: 10,
@@ -1013,7 +1256,6 @@
             
             await save_data(storeData);
             
-            // Автоматически входим
             currentUser = username;
             isAdmin = false;
             localStorage.setItem('currentUser', JSON.stringify({ 
@@ -1037,15 +1279,12 @@
 
         // ===================== ФУНКЦИИ ИНТЕРФЕЙСА =====================
         function showTab(tabName) {
-            // Скрываем все табы
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             
-            // Показываем выбранный таб
             document.getElementById(tabName + 'Tab').classList.add('active');
             event.target.classList.add('active');
             
-            // Обновляем контент таба
             if (tabName === 'products') {
                 loadProducts();
             } else if (tabName === 'orders') {
@@ -1055,7 +1294,7 @@
             }
         }
 
-                function loadProducts() {
+        function loadProducts() {
             const container = document.getElementById('productsContainer');
             
             if (!storeData.categories || Object.keys(storeData.categories).length === 0) {
@@ -1073,7 +1312,6 @@
             
             for (const [categoryName, category] of Object.entries(storeData.categories)) {
                 for (const [productName, product] of Object.entries(category)) {
-                    // Проверяем есть ли изображение для товара
                     const imageKey = `${categoryName}|${productName}`;
                     const productImage = storeData.productImages?.[imageKey];
                     
@@ -1112,15 +1350,12 @@
             container.innerHTML = html;
         }
 
-                function showProduct(category, name) {
+        function showProduct(category, name) {
             currentProduct = { category, name };
             const product = storeData.categories[category][name];
-            
-            // Проверяем есть ли изображение
             const imageKey = `${category}|${name}`;
             const productImage = storeData.productImages?.[imageKey];
             
-            // Создаем содержимое модального окна динамически
             const modal = document.getElementById('productModal');
             modal.innerHTML = `
                 <div class="modal-content">
@@ -1174,11 +1409,9 @@
                 return;
             }
             
-            // Выполняем покупку
             user.balance -= product.price;
             product.stock -= 1;
             
-            // Добавляем заказ
             const order = {
                 id: Date.now().toString(),
                 user: currentUser,
@@ -1196,12 +1429,9 @@
             updateUI();
             closeProductModal();
             showNotification(`✅ Покупка успешна! Куплен товар "${name}"`, 'success');
-            
-            // Показываем вкладку заказов
             showTab('orders');
         }
 
-        // ===================== ФУНКЦИИ ЗАКАЗОВ =====================
         function loadUserOrders() {
             const container = document.getElementById('ordersContainer');
             
@@ -1225,7 +1455,6 @@
                 return;
             }
             
-            // Сортируем по дате (новые сначала)
             userOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             
             let html = '';
@@ -1276,18 +1505,15 @@
             
             if (!confirm('Вы уверены, что хотите отменить заказ?')) return;
             
-            // Возвращаем деньги
             const user = storeData.users[currentUser];
             if (user) {
                 user.balance += order.price;
             }
             
-            // Возвращаем товар на склад
             if (storeData.categories[order.category] && storeData.categories[order.category][order.product]) {
                 storeData.categories[order.category][order.product].stock += 1;
             }
             
-            // Обновляем статус заказа
             order.status = 'cancelled';
             
             await save_data(storeData);
@@ -1296,7 +1522,6 @@
             showNotification('Заказ отменен', 'success');
         }
 
-        // ===================== ФУНКЦИИ ПРОФИЛЯ =====================
         function loadProfile() {
             if (!currentUser) {
                 document.getElementById('profileTab').innerHTML = '<p class="text-center">Войдите, чтобы увидеть профиль</p>';
@@ -1357,15 +1582,12 @@
         }
 
         function showAdminTab(tabName) {
-            // Скрываем все админ табы
             document.querySelectorAll('#adminPanel .tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('#adminPanel .tab').forEach(tab => tab.classList.remove('active'));
             
-            // Показываем выбранный таб
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
             
-            // Загружаем данные для таба
             if (tabName === 'adminStats') {
                 loadAdminStats();
             } else if (tabName === 'adminOrders') {
@@ -1374,6 +1596,8 @@
                 loadAdminCategories();
             } else if (tabName === 'adminUsers') {
                 loadUsersList();
+            } else if (tabName === 'adminPersonalize') {
+                loadPersonalizationToForm();
             }
         }
 
@@ -1382,7 +1606,6 @@
             let totalProducts = 0;
             let totalRevenue = 0;
             
-            // Считаем товары и выручку
             for (const category of Object.values(storeData.categories)) {
                 totalProducts += Object.keys(category).length;
                 for (const product of Object.values(category)) {
@@ -1404,7 +1627,6 @@
                 return;
             }
             
-            // Сортируем по дате (новые сначала)
             const sortedOrders = [...storeData.orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             
             let html = '';
@@ -1466,23 +1688,18 @@
             const oldStatus = order.status || 'pending';
             order.status = newStatus;
             
-            // Логика возврата/списания средств при изменении статуса
             if (oldStatus === 'pending' && newStatus === 'cancelled') {
-                // Возвращаем деньги
                 const user = storeData.users[order.user];
                 if (user) user.balance += order.price;
                 
-                // Возвращаем товар
                 if (storeData.categories[order.category] && storeData.categories[order.category][order.product]) {
                     storeData.categories[order.category][order.product].stock += 1;
                 }
             } else if (oldStatus === 'cancelled' && newStatus === 'pending') {
-                // Снова списываем деньги
                 const user = storeData.users[order.user];
                 if (user && user.balance >= order.price) {
                     user.balance -= order.price;
                     
-                    // Снова убираем товар
                     if (storeData.categories[order.category] && storeData.categories[order.category][order.product]) {
                         const product = storeData.categories[order.category][order.product];
                         if (product.stock > 0) product.stock -= 1;
@@ -1502,7 +1719,6 @@
             const select = document.getElementById('productCategorySelect');
             select.innerHTML = '<option value="">Выберите категорию</option>';
             
-            // Добавляем существующие категории
             for (const category of Object.keys(storeData.categories)) {
                 const option = document.createElement('option');
                 option.value = category;
@@ -1510,7 +1726,6 @@
                 select.appendChild(option);
             }
             
-            // Добавляем опцию для новой категории
             const newOption = document.createElement('option');
             newOption.value = "__new__";
             newOption.textContent = "+ Создать новую категорию";
@@ -1531,7 +1746,6 @@
             
             let actualCategory = category;
             
-            // Создаем новую категорию если нужно
             if (category === "__new__") {
                 actualCategory = prompt('Введите название новой категории:');
                 if (!actualCategory) return;
@@ -1542,7 +1756,6 @@
                 storeData.categories[category] = {};
             }
             
-            // Сохраняем/обновляем товар
             storeData.categories[actualCategory][name] = {
                 price: price,
                 stock: stock,
@@ -1554,7 +1767,6 @@
             loadAdminCategories();
             loadProducts();
             
-            // Очищаем форму
             document.getElementById('productName').value = '';
             document.getElementById('productPrice').value = '';
             document.getElementById('productStock').value = '';
@@ -1581,7 +1793,6 @@
             
             delete storeData.categories[category][name];
             
-            // Если категория пустая - удаляем её
             if (Object.keys(storeData.categories[category]).length === 0) {
                 delete storeData.categories[category];
             }
@@ -1590,7 +1801,6 @@
             loadAdminCategories();
             loadProducts();
             
-            // Очищаем форму
             document.getElementById('productName').value = '';
             document.getElementById('productPrice').value = '';
             document.getElementById('productStock').value = '';
@@ -1655,7 +1865,6 @@
             storeData.users[username].balance += amount;
             await save_data(storeData);
             
-            // Обновляем баланс текущего пользователя если это он
             if (currentUser === username) {
                 updateUI();
             }
@@ -1693,9 +1902,145 @@
             showNotification('Пароль администратора изменен', 'success');
         }
 
+        // ===================== ФУНКЦИИ ДЛЯ КАРТИНОК =====================
+        function showImageUploadModal(category, productName) {
+            editingImageFor = { category, productName };
+            
+            const imageKey = `${category}|${productName}`;
+            const existingImage = storeData.productImages?.[imageKey];
+            
+            if (existingImage) {
+                document.getElementById('imagePreview').src = existingImage;
+                document.getElementById('imagePreviewContainer').style.display = 'block';
+                document.getElementById('imageInfo').textContent = 'Изображение уже загружено (100x100)';
+            } else {
+                document.getElementById('imagePreviewContainer').style.display = 'none';
+            }
+            
+            document.getElementById('imageFileInput').value = '';
+            document.getElementById('imageUploadModal').classList.add('active');
+        }
+
+        function closeImageUploadModal() {
+            document.getElementById('imageUploadModal').classList.remove('active');
+            editingImageFor = null;
+        }
+
+        function previewImage() {
+            const fileInput = document.getElementById('imageFileInput');
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            const preview = document.getElementById('imagePreview');
+            const info = document.getElementById('imageInfo');
+            
+            if (fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+                
+                if (file.size > 1024 * 1024) {
+                    showNotification('Файл слишком большой (макс. 1MB)', 'error');
+                    fileInput.value = '';
+                    return;
+                }
+                
+                if (!file.type.startsWith('image/')) {
+                    showNotification('Выберите файл изображения', 'error');
+                    fileInput.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const tempImg = new Image();
+                    tempImg.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = 100;
+                        canvas.height = 100;
+                        ctx.drawImage(tempImg, 0, 0, 100, 100);
+                        preview.src = canvas.toDataURL('image/jpeg', 0.7);
+                        previewContainer.style.display = 'block';
+                        info.textContent = `Размер: ${Math.round(file.size / 1024)}KB → Сжато до 100x100`;
+                    };
+                    tempImg.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function uploadProductImage() {
+            if (!editingImageFor) return;
+            
+            const fileInput = document.getElementById('imageFileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showNotification('Выберите файл изображения', 'warning');
+                return;
+            }
+            
+            try {
+                showNotification('Сжимаем изображение...', 'info');
+                
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 100;
+                    canvas.height = 100;
+                    ctx.drawImage(img, 0, 0, 100, 100);
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    
+                    const imageKey = `${editingImageFor.category}|${editingImageFor.productName}`;
+                    if (!storeData.productImages) storeData.productImages = {};
+                    storeData.productImages[imageKey] = compressedBase64;
+                    
+                    save_data(storeData).then(() => {
+                        showNotification('Изображение успешно загружено (100x100)', 'success');
+                        closeImageUploadModal();
+                        
+                        if (document.getElementById('productsTab').classList.contains('active')) {
+                            loadProducts();
+                        }
+                    });
+                };
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                
+            } catch (error) {
+                console.error('Ошибка сжатия изображения:', error);
+                showNotification('Ошибка обработки изображения', 'error');
+            }
+        }
+
+        async function removeProductImage() {
+            if (!editingImageFor) return;
+            
+            const imageKey = `${editingImageFor.category}|${editingImageFor.productName}`;
+            if (storeData.productImages && storeData.productImages[imageKey]) {
+                if (!confirm('Удалить изображение товара?')) return;
+                
+                delete storeData.productImages[imageKey];
+                await save_data(storeData);
+                showNotification('Изображение удалено', 'success');
+                closeImageUploadModal();
+                
+                if (document.getElementById('productsTab').classList.contains('active')) {
+                    loadProducts();
+                }
+            } else {
+                showNotification('Изображение не найдено', 'warning');
+            }
+        }
+
+        function clearProductImage() {
+            // Функция-заглушка, оставлена для совместимости
+        }
+
         // ===================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====================
         function updateUI() {
-            // Обновляем баланс
             if (currentUser && storeData.users[currentUser]) {
                 document.getElementById('balanceAmount').textContent = storeData.users[currentUser].balance + ' ₴';
                 document.getElementById('authBtnText').textContent = currentUser;
@@ -1708,10 +2053,8 @@
                 document.getElementById('logoutBtn').classList.add('hidden');
             }
             
-            // Обновляем кнопку админа
-            document.getElementById('adminBtn').classList.toggle('hidden', currentUser === 'admin');
+            document.getElementById('adminBtn').classList.toggle('hidden', currentUser !== 'admin');
             
-            // Обновляем товары если на вкладке товаров
             if (document.getElementById('productsTab').classList.contains('active')) {
                 loadProducts();
             }
@@ -1742,18 +2085,37 @@
         }
 
         // ===================== ИНИЦИАЛИЗАЦИЯ =====================
-                async function init() {
+        async function init() {
             console.log('🚀 Инициализация магазина...');
             
-            // Загружаем данные с сервера
             storeData = await get_data();
             
-            // Инициализируем productImages если нет
             if (!storeData.productImages) {
                 storeData.productImages = {};
             }
             
-            // Проверяем сохраненного пользователя
+            // Инициализация персонализации
+            if (!storeData.personalization) {
+                storeData.personalization = {
+                    bgType: 'gradient',
+                    gradientPreset: '135deg, #667eea 0%, #764ba2 100%',
+                    customGradient: '',
+                    solidColor: '#667eea',
+                    bgImageUrl: '',
+                    bgSize: 'cover',
+                    primaryColor: '#2c3e50',
+                    secondaryColor: '#3498db',
+                    cardBgColor: '#ffffff',
+                    textColor: '#333333',
+                    headerBgColor: '#ffffff',
+                    enableShadows: true,
+                    enableAnimations: true
+                };
+            }
+            
+            // Применяем сохраненную персонализацию
+            applyPersonalization(storeData.personalization);
+            
             const savedUser = localStorage.getItem('currentUser');
             if (savedUser) {
                 try {
@@ -1765,175 +2127,15 @@
                 }
             }
             
-            // Обновляем интерфейс
             updateUI();
-            
-            // Загружаем товары
             loadProducts();
             
-            // Добавляем обработчик для предпросмотра изображений
             document.getElementById('imageFileInput').addEventListener('change', previewImage);
             
             console.log('✅ Магазин готов к работе!');
             showNotification('Добро пожаловать в SuperShop!', 'success');
         }
 
-
-
-                // ===================== ФУНКЦИИ ДЛЯ КАРТИНОК =====================
-        function showImageUploadModal(category, productName) {
-            editingImageFor = { category, productName };
-            
-            // Проверяем есть ли уже изображение
-            const imageKey = `${category}|${productName}`;
-            const existingImage = storeData.productImages?.[imageKey];
-            
-            if (existingImage) {
-                document.getElementById('imagePreview').src = existingImage;
-                document.getElementById('imagePreviewContainer').style.display = 'block';
-                document.getElementById('imageInfo').textContent = 'Изображение уже загружено (100x100)';
-            } else {
-                document.getElementById('imagePreviewContainer').style.display = 'none';
-            }
-            
-            // Очищаем input файла
-            document.getElementById('imageFileInput').value = '';
-            
-            document.getElementById('imageUploadModal').classList.add('active');
-        }
-
-        function closeImageUploadModal() {
-            document.getElementById('imageUploadModal').classList.remove('active');
-            editingImageFor = null;
-        }
-
-        function previewImage() {
-            const fileInput = document.getElementById('imageFileInput');
-            const previewContainer = document.getElementById('imagePreviewContainer');
-            const preview = document.getElementById('imagePreview');
-            const info = document.getElementById('imageInfo');
-            
-            if (fileInput.files && fileInput.files[0]) {
-                const file = fileInput.files[0];
-                
-                // Проверяем размер (максимум 1MB)
-                if (file.size > 1024 * 1024) {
-                    showNotification('Файл слишком большой (макс. 1MB)', 'error');
-                    fileInput.value = '';
-                    return;
-                }
-                
-                // Проверяем тип
-                if (!file.type.startsWith('image/')) {
-                    showNotification('Выберите файл изображения', 'error');
-                    fileInput.value = '';
-                    return;
-                }
-                
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    // Создаем временное изображение для показа предпросмотра
-                    const tempImg = new Image();
-                    tempImg.onload = function() {
-                        // Создаем canvas для показа предпросмотра
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        canvas.width = 100;
-                        canvas.height = 100;
-                        ctx.drawImage(tempImg, 0, 0, 100, 100);
-                        preview.src = canvas.toDataURL('image/jpeg', 0.7);
-                        previewContainer.style.display = 'block';
-                        info.textContent = `Размер: ${Math.round(file.size / 1024)}KB → Сжато до 100x100`;
-                    };
-                    tempImg.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        async function uploadProductImage() {
-            if (!editingImageFor) return;
-            
-            const fileInput = document.getElementById('imageFileInput');
-            const file = fileInput.files[0];
-            
-            if (!file) {
-                showNotification('Выберите файл изображения', 'warning');
-                return;
-            }
-            
-            try {
-                showNotification('Сжимаем изображение...', 'info');
-                
-                // Создаем временный элемент img
-                const img = new Image();
-                img.onload = function() {
-                    // Создаем canvas для сжатия
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    // Устанавливаем размер 100x100
-                    canvas.width = 100;
-                    canvas.height = 100;
-                    
-                    // Рисуем сжатое изображение
-                    ctx.drawImage(img, 0, 0, 100, 100);
-                    
-                    // Получаем base64 строку (JPEG с качеством 70%)
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
-                    
-                    // Сохраняем в storeData
-                    const imageKey = `${editingImageFor.category}|${editingImageFor.productName}`;
-                    if (!storeData.productImages) storeData.productImages = {};
-                    storeData.productImages[imageKey] = compressedBase64;
-                    
-                    // Сохраняем на сервер
-                    save_data(storeData).then(() => {
-                        showNotification('Изображение успешно загружено (100x100)', 'success');
-                        closeImageUploadModal();
-                        
-                        // Обновляем отображение товара
-                        if (document.getElementById('productsTab').classList.contains('active')) {
-                            loadProducts();
-                        }
-                    });
-                };
-                
-                // Загружаем выбранный файл в img
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-                
-            } catch (error) {
-                console.error('Ошибка сжатия изображения:', error);
-                showNotification('Ошибка обработки изображения', 'error');
-            }
-        }
-
-        async function removeProductImage() {
-            if (!editingImageFor) return;
-            
-            const imageKey = `${editingImageFor.category}|${editingImageFor.productName}`;
-            if (storeData.productImages && storeData.productImages[imageKey]) {
-                if (!confirm('Удалить изображение товара?')) return;
-                
-                delete storeData.productImages[imageKey];
-                await save_data(storeData);
-                showNotification('Изображение удалено', 'success');
-                closeImageUploadModal();
-                
-                // Обновляем отображение товара
-                if (document.getElementById('productsTab').classList.contains('active')) {
-                    loadProducts();
-                }
-            } else {
-                showNotification('Изображение не найдено', 'warning');
-            }
-        }
-
-        // Запускаем при загрузке страницы
         window.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
