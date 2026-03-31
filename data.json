@@ -92,5 +92,20 @@
       "createdAt": "2026-01-29T10:09:05.828Z",
       "password": "123"
     }
+  },
+  "personalization": {
+    "bgType": "gradient",
+    "gradientPreset": "135deg, #fa709a 0%, #fee140 100%",
+    "customGradient": "135deg, #fa709a 0%, #fee140 100%",
+    "solidColor": "#667eea",
+    "bgImageUrl": "",
+    "bgSize": "cover",
+    "primaryColor": "#0f34a3",
+    "secondaryColor": "#49dd13",
+    "cardBgColor": "#bf7e0d",
+    "textColor": "#7324c2",
+    "headerBgColor": "#d5c407",
+    "enableShadows": true,
+    "enableAnimations": true
   }
 }
